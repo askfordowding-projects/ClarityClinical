@@ -12,8 +12,7 @@ public sealed class WorkspaceContractTests
         await using var context = await ApiTestContext.CreateAsync();
         using var client = context.CreateClient();
         await LoginAsClinicianAsync(client);
-        var patientId = await context.SeedMiguelScenarioAsync();
-        var consultationId = await context.AddConsultationAsync(patientId);
+        var consultationId = await context.CreateMiguelDemoConsultationAsync(client);
         await StartConsultationAsync(client, consultationId);
 
         var response = await client.GetAsync($"/api/consultations/{consultationId}/workspace");
@@ -40,8 +39,7 @@ public sealed class WorkspaceContractTests
         await using var context = await ApiTestContext.CreateAsync();
         using var client = context.CreateClient();
         await LoginAsClinicianAsync(client);
-        var patientId = await context.SeedMiguelScenarioAsync();
-        var consultationId = await context.AddConsultationAsync(patientId);
+        var consultationId = await context.CreateMiguelDemoConsultationAsync(client);
         await StartConsultationAsync(client, consultationId);
 
         var response = await client.PostAsJsonAsync(

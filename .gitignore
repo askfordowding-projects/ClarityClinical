@@ -30,4 +30,5 @@ Thumbs.db
 
 # Worktrees / execution scratch
 .worktrees/
+.work/
 .superpowers/

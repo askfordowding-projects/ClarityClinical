@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using ClarityClinical.Api.Identity;
 using ClarityClinical.Application.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -31,7 +32,8 @@ public sealed class AuthController(IDemoIdentityProvider demoIdentityProvider) :
             new Claim(ClaimTypes.NameIdentifier, demoUser.UserId),
             new Claim(ClaimTypes.Name, demoUser.DisplayName),
             new Claim(ClaimTypes.Role, demoUser.Role),
-            new Claim("is_demo", bool.TrueString)
+            new Claim(DemoClaimTypes.IsDemo, bool.TrueString),
+            new Claim(DemoClaimTypes.VisitorId, Guid.NewGuid().ToString("N"))
         };
         var principal = new ClaimsPrincipal(new ClaimsIdentity(
             claims,
@@ -53,7 +55,7 @@ public sealed class AuthController(IDemoIdentityProvider demoIdentityProvider) :
     public IActionResult Me()
     {
         var role = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
-        var isDemo = bool.TryParse(User.FindFirstValue("is_demo"), out var value) && value;
+        var isDemo = bool.TryParse(User.FindFirstValue(DemoClaimTypes.IsDemo), out var value) && value;
         return Ok(new CurrentUserResponse(User.Identity?.Name ?? string.Empty, role, isDemo));
     }
 

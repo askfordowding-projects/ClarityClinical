@@ -1,3 +1,4 @@
+using ClarityClinical.Api.Identity;
 using ClarityClinical.Application.Consultations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,27 +9,40 @@ namespace ClarityClinical.Api.Controllers;
 [Authorize(Roles = "Clinician")]
 [Route("api/consultations")]
 public sealed class ConsultationLifecycleController(
-    ConsultationLifecycleService lifecycleService) : ControllerBase
+    ConsultationLifecycleService lifecycleService,
+    DemoConsultationAccess demoAccess) : ControllerBase
 {
     [HttpPost("{consultationId:guid}/start")]
-    public Task<IActionResult> Start(
+    public async Task<IActionResult> Start(
         Guid consultationId,
-        CancellationToken cancellationToken) =>
-        ExecuteAsync(
-            () => lifecycleService.StartAsync(
-                consultationId,
-                DateTimeOffset.UtcNow,
-                cancellationToken));
+        CancellationToken cancellationToken)
+    {
+        if (!await demoAccess.CanAccessAsync(consultationId, cancellationToken))
+        {
+            return ConsultationNotFound();
+        }
+
+        return await ExecuteAsync(() => lifecycleService.StartAsync(
+            consultationId,
+            DateTimeOffset.UtcNow,
+            cancellationToken));
+    }
 
     [HttpPost("{consultationId:guid}/complete")]
-    public Task<IActionResult> Complete(
+    public async Task<IActionResult> Complete(
         Guid consultationId,
-        CancellationToken cancellationToken) =>
-        ExecuteAsync(
-            () => lifecycleService.CompleteAsync(
-                consultationId,
-                DateTimeOffset.UtcNow,
-                cancellationToken));
+        CancellationToken cancellationToken)
+    {
+        if (!await demoAccess.CanAccessAsync(consultationId, cancellationToken))
+        {
+            return ConsultationNotFound();
+        }
+
+        return await ExecuteAsync(() => lifecycleService.CompleteAsync(
+            consultationId,
+            DateTimeOffset.UtcNow,
+            cancellationToken));
+    }
 
     private async Task<IActionResult> ExecuteAsync(
         Func<Task<Domain.Consultations.Consultation>> operation)
@@ -40,12 +54,9 @@ public sealed class ConsultationLifecycleController(
                 consultation.Id,
                 consultation.Status.ToString()));
         }
-        catch (KeyNotFoundException exception)
+        catch (KeyNotFoundException)
         {
-            return Problem(
-                statusCode: StatusCodes.Status404NotFound,
-                title: "Consultation not found",
-                detail: exception.Message);
+            return ConsultationNotFound();
         }
         catch (InvalidOperationException exception)
         {
@@ -55,6 +66,11 @@ public sealed class ConsultationLifecycleController(
                 detail: exception.Message);
         }
     }
+
+    private ObjectResult ConsultationNotFound() => Problem(
+        statusCode: StatusCodes.Status404NotFound,
+        title: "Consultation not found",
+        detail: "The consultation was not found or is not available to this demo session.");
 
     public sealed record ConsultationStatusResponse(Guid Id, string Status);
 }

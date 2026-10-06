@@ -1,4 +1,5 @@
 using ClarityClinical.Domain.Assessments;
+using ClarityClinical.Domain.Audit;
 using ClarityClinical.Domain.Consultations;
 using ClarityClinical.Domain.Demo;
 using ClarityClinical.Domain.Patients;
@@ -14,6 +15,8 @@ public sealed class ClarityClinicalDbContext(DbContextOptions<ClarityClinicalDbC
     public DbSet<ClinicalAssessment> ClinicalAssessments => Set<ClinicalAssessment>();
     public DbSet<DemoScenario> DemoScenarios => Set<DemoScenario>();
     public DbSet<DemoScenarioStep> DemoScenarioSteps => Set<DemoScenarioStep>();
+    public DbSet<DemoSession> DemoSessions => Set<DemoSession>();
+    public DbSet<AuditEvent> AuditEvents => Set<AuditEvent>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

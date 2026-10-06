@@ -1,3 +1,4 @@
+using ClarityClinical.Api.Identity;
 using ClarityClinical.Application.Consultations.Workspace;
 using ClarityClinical.Domain.Consultations;
 using Microsoft.AspNetCore.Authorization;
@@ -10,20 +11,26 @@ namespace ClarityClinical.Api.Controllers;
 [Route("api/consultations/{consultationId:guid}")]
 public sealed class ConsultationWorkspaceController(
     GetConsultationWorkspaceQuery workspaceQuery,
-    AddClinicalFactService addClinicalFactService) : ControllerBase
+    AddClinicalFactService addClinicalFactService,
+    DemoConsultationAccess demoAccess) : ControllerBase
 {
     [HttpGet("workspace")]
     public async Task<IActionResult> GetWorkspace(
         Guid consultationId,
         CancellationToken cancellationToken)
     {
+        if (!await demoAccess.CanAccessAsync(consultationId, cancellationToken))
+        {
+            return NotFoundProblem();
+        }
+
         try
         {
             return Ok(await workspaceQuery.ExecuteAsync(consultationId, cancellationToken));
         }
-        catch (KeyNotFoundException exception)
+        catch (KeyNotFoundException)
         {
-            return NotFoundProblem(exception.Message);
+            return NotFoundProblem();
         }
     }
 
@@ -55,6 +62,11 @@ public sealed class ConsultationWorkspaceController(
         ClinicalFactSource source,
         CancellationToken cancellationToken)
     {
+        if (!await demoAccess.CanAccessAsync(consultationId, cancellationToken))
+        {
+            return NotFoundProblem();
+        }
+
         try
         {
             await addClinicalFactService.AddAsync(
@@ -65,9 +77,9 @@ public sealed class ConsultationWorkspaceController(
                 cancellationToken);
             return Ok(await workspaceQuery.ExecuteAsync(consultationId, cancellationToken));
         }
-        catch (KeyNotFoundException exception)
+        catch (KeyNotFoundException)
         {
-            return NotFoundProblem(exception.Message);
+            return NotFoundProblem();
         }
         catch (InvalidOperationException exception)
         {
@@ -85,11 +97,10 @@ public sealed class ConsultationWorkspaceController(
         }
     }
 
-    private ObjectResult NotFoundProblem(string detail) =>
-        Problem(
-            statusCode: StatusCodes.Status404NotFound,
-            title: "Clinical workspace not found",
-            detail: detail);
+    private ObjectResult NotFoundProblem() => Problem(
+        statusCode: StatusCodes.Status404NotFound,
+        title: "Clinical workspace not found",
+        detail: "The consultation was not found or is not available to this demo session.");
 
     public sealed record ClinicalFactRequest(string Code, string DisplayText);
 }

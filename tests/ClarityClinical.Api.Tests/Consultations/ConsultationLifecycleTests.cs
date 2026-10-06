@@ -26,7 +26,7 @@ public sealed class ConsultationLifecycleTests
         await using var context = await ApiTestContext.CreateAsync();
         using var client = context.CreateClient();
         await LoginAsClinicianAsync(client);
-        var consultationId = await context.AddConsultationAsync();
+        var consultationId = await context.CreateMiguelDemoConsultationAsync(client);
 
         var start = await client.PostAsync($"/api/consultations/{consultationId}/start", null);
         Assert.Equal(HttpStatusCode.OK, start.StatusCode);
@@ -45,7 +45,7 @@ public sealed class ConsultationLifecycleTests
         await using var context = await ApiTestContext.CreateAsync();
         using var client = context.CreateClient();
         await LoginAsClinicianAsync(client);
-        var consultationId = await context.AddConsultationAsync();
+        var consultationId = await context.CreateMiguelDemoConsultationAsync(client);
 
         var response = await client.PostAsync($"/api/consultations/{consultationId}/complete", null);
 
@@ -59,7 +59,7 @@ public sealed class ConsultationLifecycleTests
         await using var context = await ApiTestContext.CreateAsync();
         using var client = context.CreateClient();
         await LoginAsClinicianAsync(client);
-        var consultationId = await context.AddConsultationAsync();
+        var consultationId = await context.CreateMiguelDemoConsultationAsync(client);
 
         Assert.Equal(
             HttpStatusCode.OK,

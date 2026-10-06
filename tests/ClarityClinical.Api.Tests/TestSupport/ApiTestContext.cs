@@ -1,3 +1,4 @@
+using System.Net.Http.Json;
 using ClarityClinical.Infrastructure.Demo;
 using ClarityClinical.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
@@ -70,6 +71,17 @@ public sealed class ApiTestContext : IAsyncDisposable
             .SingleAsync();
     }
 
+    public async Task<Guid> CreateMiguelDemoConsultationAsync(HttpClient client)
+    {
+        await SeedMiguelScenarioAsync();
+        var response = await client.PostAsJsonAsync(
+            "/api/demo/sessions",
+            new { scenarioKey = DemoScenarioSeeder.MiguelScenarioKey });
+        response.EnsureSuccessStatusCode();
+        var session = await response.Content.ReadFromJsonAsync<DemoSessionResponse>();
+        return session!.ConsultationId;
+    }
+
     public async Task<Guid> AddConsultationAsync(Guid? patientId = null)
     {
         var id = Guid.NewGuid();
@@ -81,6 +93,8 @@ public sealed class ApiTestContext : IAsyncDisposable
         await dbContext.SaveChangesAsync();
         return id;
     }
+
+    private sealed record DemoSessionResponse(Guid Id, Guid ConsultationId);
 
     public async ValueTask DisposeAsync()
     {
