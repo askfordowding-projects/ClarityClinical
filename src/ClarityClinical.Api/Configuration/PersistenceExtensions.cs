@@ -1,9 +1,13 @@
+using ClarityClinical.Application.ClinicalIntelligence;
 using ClarityClinical.Application.Consultations;
+using ClarityClinical.Application.Consultations.Workspace;
 using ClarityClinical.Application.Demo;
 using ClarityClinical.Application.Identity;
+using ClarityClinical.Application.Patients;
 using ClarityClinical.Infrastructure.Consultations;
 using ClarityClinical.Infrastructure.Demo;
 using ClarityClinical.Infrastructure.Identity;
+using ClarityClinical.Infrastructure.Patients;
 using ClarityClinical.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +29,12 @@ public static class PersistenceExtensions
         services.AddScoped<DemoScenarioSeeder>();
         services.AddScoped<IDemoIdentityProvider, DemoIdentityProvider>();
         services.AddScoped<IConsultationRepository, ConsultationRepository>();
+        services.AddScoped<IPatientRepository, PatientRepository>();
         services.AddScoped<ConsultationLifecycleService>();
+        services.AddScoped<GetConsultationWorkspaceQuery>();
+        services.AddScoped<AddClinicalFactService>();
+        services.AddSingleton<MiguelScenarioRuleSet>();
+        services.AddScoped<IClinicalIntelligenceProvider, DeterministicClinicalIntelligenceProvider>();
 
         return services;
     }

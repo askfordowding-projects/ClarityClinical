@@ -9,9 +9,11 @@ public sealed class ConsultationRepository(ClarityClinicalDbContext dbContext) :
 {
     public Task<Consultation?> GetAsync(Guid consultationId, CancellationToken cancellationToken)
     {
-        return dbContext.Consultations.SingleOrDefaultAsync(
-            consultation => consultation.Id == consultationId,
-            cancellationToken);
+        return dbContext.Consultations
+            .Include(consultation => consultation.Facts)
+            .SingleOrDefaultAsync(
+                consultation => consultation.Id == consultationId,
+                cancellationToken);
     }
 
     public Task SaveChangesAsync(CancellationToken cancellationToken)

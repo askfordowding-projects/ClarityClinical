@@ -11,7 +11,7 @@ public sealed class ClinicalFactConfiguration : IEntityTypeConfiguration<Clinica
         builder.ToTable("clinical_event", DbSchemas.Consultations);
         builder.HasKey(fact => fact.Id);
 
-        builder.Property(fact => fact.Id).HasColumnName("id");
+        builder.Property(fact => fact.Id).HasColumnName("id").ValueGeneratedNever();
         builder.Property<Guid>("consultation_id").HasColumnName("consultation_id");
         builder.Property(fact => fact.Code).HasColumnName("code").HasMaxLength(120).IsRequired();
         builder.Property(fact => fact.DisplayText).HasColumnName("display_text").HasMaxLength(500).IsRequired();

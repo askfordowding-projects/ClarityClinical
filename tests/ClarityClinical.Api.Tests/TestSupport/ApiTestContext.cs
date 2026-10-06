@@ -1,8 +1,8 @@
+using ClarityClinical.Infrastructure.Demo;
 using ClarityClinical.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 
@@ -58,12 +58,26 @@ public sealed class ApiTestContext : IAsyncDisposable
         HandleCookies = true
     });
 
-    public async Task<Guid> AddConsultationAsync()
+    public async Task<Guid> SeedMiguelScenarioAsync()
+    {
+        await using var scope = Factory.Services.CreateAsyncScope();
+        var seeder = scope.ServiceProvider.GetRequiredService<DemoScenarioSeeder>();
+        await seeder.SeedAsync(CancellationToken.None);
+        var dbContext = scope.ServiceProvider.GetRequiredService<ClarityClinicalDbContext>();
+        return await dbContext.DemoScenarios
+            .Where(scenario => scenario.ScenarioKey == DemoScenarioSeeder.MiguelScenarioKey)
+            .Select(scenario => scenario.PatientId)
+            .SingleAsync();
+    }
+
+    public async Task<Guid> AddConsultationAsync(Guid? patientId = null)
     {
         var id = Guid.NewGuid();
         await using var scope = Factory.Services.CreateAsyncScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ClarityClinicalDbContext>();
-        dbContext.Consultations.Add(new Domain.Consultations.Consultation(id, Guid.NewGuid()));
+        dbContext.Consultations.Add(new Domain.Consultations.Consultation(
+            id,
+            patientId ?? Guid.NewGuid()));
         await dbContext.SaveChangesAsync();
         return id;
     }
