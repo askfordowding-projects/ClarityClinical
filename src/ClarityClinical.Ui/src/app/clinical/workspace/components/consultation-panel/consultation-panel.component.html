@@ -1,0 +1,43 @@
+<section class="consultation-panel" aria-labelledby="consultation-title">
+  <header class="consultation-panel__header">
+    <div>
+      <p>Live consultation</p>
+      <h2 id="consultation-title">Conversation</h2>
+    </div>
+    <span class="listening-state" aria-label="Microphone is not currently listening">
+      <span class="listening-state__dot"></span>
+      Ready to listen
+    </span>
+  </header>
+
+  <div class="transcript" aria-live="polite">
+    @if (transcript.length === 0) {
+      <div class="transcript__empty">
+        <strong>Consultation transcript</strong>
+        <span>Start listening or use the scripted demonstration to begin.</span>
+      </div>
+    } @else {
+      @for (entry of transcript; track entry.id) {
+        <article class="transcript-entry">
+          <div class="transcript-entry__meta">
+            <strong>{{ entry.speakerRole }}</strong>
+            <span>{{ entry.originalLanguage }}</span>
+            @if (entry.corrected) {
+              <span>Corrected</span>
+            }
+          </div>
+          <p>{{ entry.originalText }}</p>
+          @if (entry.translatedText) {
+            <p class="transcript-entry__translation">{{ entry.translatedText }}</p>
+          }
+        </article>
+      }
+    }
+  </div>
+
+  <div class="consultation-controls" aria-label="Consultation controls">
+    <button type="button">Start listening</button>
+    <button type="button" class="secondary">Correct transcript</button>
+    <button type="button" class="secondary">Add clinical note</button>
+  </div>
+</section>

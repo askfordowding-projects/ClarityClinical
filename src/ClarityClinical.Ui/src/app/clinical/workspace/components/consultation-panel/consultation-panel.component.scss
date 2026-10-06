@@ -1,0 +1,126 @@
+:host {
+  display: block;
+  min-width: 0;
+  height: 100%;
+}
+
+.consultation-panel {
+  display: grid;
+  grid-template-rows: auto minmax(16rem, 1fr) auto;
+  gap: 1rem;
+  height: 100%;
+  padding: 1rem 1.15rem;
+  background: #fff;
+}
+
+.consultation-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 1rem;
+}
+
+.consultation-panel__header p,
+.consultation-panel__header h2 {
+  margin: 0;
+}
+
+.consultation-panel__header p {
+  color: #607673;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.consultation-panel__header h2 {
+  margin-top: 0.2rem;
+  font-size: 1rem;
+}
+
+.listening-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.55rem;
+  border-radius: 999px;
+  background: #eff4f3;
+  color: #4b625e;
+  font-size: 0.72rem;
+}
+
+.listening-state__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #78908c;
+}
+
+.transcript {
+  overflow: auto;
+  padding-right: 0.25rem;
+}
+
+.transcript__empty {
+  display: grid;
+  place-content: center;
+  gap: 0.35rem;
+  min-height: 13rem;
+  padding: 1rem;
+  border: 1px dashed #c8d6d4;
+  border-radius: 0.75rem;
+  text-align: center;
+  color: #60726f;
+}
+
+.transcript-entry {
+  margin-bottom: 0.75rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 0.75rem;
+  background: #f5f8f7;
+}
+
+.transcript-entry p {
+  margin: 0.4rem 0 0;
+}
+
+.transcript-entry__meta {
+  display: flex;
+  gap: 0.5rem;
+  color: #647874;
+  font-size: 0.7rem;
+}
+
+.transcript-entry__translation {
+  padding-top: 0.5rem;
+  border-top: 1px solid #dde6e4;
+  color: #315d57;
+}
+
+.consultation-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.consultation-controls button {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #356e67;
+  border-radius: 0.55rem;
+  background: #356e67;
+  color: #fff;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 650;
+}
+
+.consultation-controls .secondary {
+  background: #fff;
+  color: #355b56;
+  border-color: #b9ccc9;
+}
+
+.consultation-controls button:focus-visible {
+  outline: 0.18rem solid #245d57;
+  outline-offset: 0.15rem;
+}

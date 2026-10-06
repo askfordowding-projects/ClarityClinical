@@ -1,0 +1,47 @@
+<section class="patient-panel" aria-labelledby="patient-context-title">
+  <header class="patient-panel__header">
+    <p>Patient record</p>
+    <h2 id="patient-context-title">
+      {{ patient?.displayName ?? 'Patient context' }}
+      @if (patient) { <span>{{ patient.age }}</span> }
+    </h2>
+  </header>
+
+  @if (patient) {
+    <section class="patient-section patient-section--alert" aria-labelledby="allergies-heading">
+      <h3 id="allergies-heading">Allergies</h3>
+      <div class="tag-list">
+        @for (allergy of patient.allergies; track allergy.code) {
+          <span class="tag tag--alert">{{ allergy.displayName }}</span>
+        }
+      </div>
+    </section>
+
+    <section class="patient-section" aria-labelledby="conditions-heading">
+      <h3 id="conditions-heading">Conditions</h3>
+      <ul>
+        @for (condition of patient.conditions; track condition.code) {
+          <li>{{ condition.displayName }}</li>
+        }
+      </ul>
+    </section>
+
+    <section class="patient-section" aria-labelledby="medications-heading">
+      <h3 id="medications-heading">Medication</h3>
+      <ul>
+        @for (medication of patient.medications; track medication.code) {
+          <li>{{ medication.displayName }}</li>
+        }
+      </ul>
+    </section>
+
+    @if (patient.medications.length > 0) {
+      <aside class="medication-warning" role="note">
+        <strong>Medication safety</strong>
+        <span>Review interactions and allergies before treatment decisions.</span>
+      </aside>
+    }
+  } @else {
+    <p class="patient-panel__empty">Patient context will appear when the consultation loads.</p>
+  }
+</section>

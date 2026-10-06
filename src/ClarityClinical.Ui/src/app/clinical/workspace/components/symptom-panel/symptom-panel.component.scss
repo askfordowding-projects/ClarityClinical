@@ -1,0 +1,101 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.symptom-panel {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  height: 100%;
+  padding: 1rem;
+  background: #fbfcfc;
+}
+
+.panel-heading__eyebrow,
+.panel-heading h2,
+.selected-concern span {
+  margin: 0;
+}
+
+.panel-heading__eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #58716e;
+}
+
+.panel-heading h2 {
+  margin-top: 0.2rem;
+  font-size: 1rem;
+}
+
+.body-map {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.body-map__figure {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  padding: 0.65rem;
+  border: 1px solid #dce5e4;
+  border-radius: 0.65rem;
+  background: #fff;
+  font-size: 0.7rem;
+  color: #6c7e7b;
+}
+
+.body-map svg {
+  width: min(100%, 5.5rem);
+  fill: none;
+  stroke: #718783;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.body-map .body-map__marker {
+  fill: rgba(181, 100, 50, 0.18);
+  stroke: #a0522d;
+}
+
+.concern-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.concern-filters button {
+  padding: 0.4rem 0.65rem;
+  border: 1px solid #ccd9d7;
+  border-radius: 999px;
+  background: #fff;
+  color: #35514d;
+  font: inherit;
+  font-size: 0.75rem;
+}
+
+.concern-filters .is-selected {
+  border-color: #447b74;
+  background: #e5f2f0;
+  font-weight: 700;
+}
+
+.selected-concern {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem;
+  border-radius: 0.65rem;
+  background: #edf4f3;
+  font-size: 0.78rem;
+}
+
+.selected-concern__label {
+  color: #607673;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}

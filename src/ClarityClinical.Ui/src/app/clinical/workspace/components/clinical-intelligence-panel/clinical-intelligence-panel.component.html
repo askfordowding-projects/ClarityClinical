@@ -1,0 +1,59 @@
+<section class="intelligence-panel" aria-labelledby="clinical-intelligence-title">
+  <header class="intelligence-panel__header">
+    <div>
+      <p>AI clinical intelligence</p>
+      <h2 id="clinical-intelligence-title">Current assessment</h2>
+    </div>
+    <span class="review-state">Provisional &bull; Clinician review required</span>
+  </header>
+
+  <div class="assessment-grid">
+    @for (assessment of assessments; track assessment.key) {
+      <article class="assessment-card">
+        <header class="assessment-card__header">
+          <div>
+            <span class="assessment-card__label">{{ assessment.displayName }}</span>
+            <span class="assessment-card__score-type">Illustrative priority</span>
+          </div>
+          <strong class="assessment-card__score">{{ assessment.currentScore }}%</strong>
+        </header>
+
+        @if (assessment.changeReason) {
+          <p class="assessment-card__change">{{ assessment.changeReason }}</p>
+        }
+
+        <div class="assessment-card__evidence">
+          <strong>Supporting evidence</strong>
+          @if (assessment.supportingEvidence.length === 0) {
+            <span>No supporting facts recorded yet.</span>
+          } @else {
+            <ul>
+              @for (evidence of assessment.supportingEvidence; track evidence.factCode) {
+                <li>{{ evidence.displayText }} <small>{{ evidence.source }}</small></li>
+              }
+            </ul>
+          }
+        </div>
+
+        @if (assessment.missingEvidence.length > 0) {
+          <div class="assessment-card__missing">
+            <strong>Still required</strong>
+            <span>{{ assessment.missingEvidence.join(' � ') }}</span>
+          </div>
+        }
+
+        <div class="assessment-card__actions">
+          <button type="button">Why this score?</button>
+          <button type="button">Why did this change?</button>
+        </div>
+      </article>
+    } @empty {
+      <div class="assessment-grid__empty">Assessment candidates will appear here.</div>
+    }
+  </div>
+
+  <footer class="intelligence-panel__footer">
+    <span>Illustrative priority scores are not validated diagnostic probabilities.</span>
+    <strong>Clinical decisions remain with the clinician.</strong>
+  </footer>
+</section>

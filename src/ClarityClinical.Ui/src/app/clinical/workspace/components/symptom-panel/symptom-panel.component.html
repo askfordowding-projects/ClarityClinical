@@ -1,0 +1,43 @@
+<section class="symptom-panel" aria-labelledby="symptom-panel-title">
+  <header class="panel-heading">
+    <div>
+      <p class="panel-heading__eyebrow">Symptom mapping</p>
+      <h2 id="symptom-panel-title">Current concerns</h2>
+    </div>
+  </header>
+
+  <div class="body-map" aria-label="Anterior and posterior body maps">
+    <div class="body-map__figure">
+      <span>Anterior</span>
+      <svg viewBox="0 0 90 190" role="img" aria-label="Anterior body outline">
+        <circle cx="45" cy="18" r="12" />
+        <path d="M45 30 L45 92 M25 48 L65 48 M25 48 L16 88 M65 48 L74 88 M45 92 L27 142 M45 92 L63 142 M27 142 L24 180 M63 142 L66 180" />
+        <circle class="body-map__marker" cx="29" cy="132" r="8" />
+      </svg>
+    </div>
+    <div class="body-map__figure">
+      <span>Posterior</span>
+      <svg viewBox="0 0 90 190" role="img" aria-label="Posterior body outline">
+        <circle cx="45" cy="18" r="12" />
+        <path d="M45 30 L45 92 M25 48 L65 48 M25 48 L16 88 M65 48 L74 88 M45 92 L27 142 M45 92 L63 142 M27 142 L24 180 M63 142 L66 180" />
+        <circle class="body-map__marker" cx="29" cy="132" r="8" />
+      </svg>
+    </div>
+  </div>
+
+  <div class="concern-filters" aria-label="Symptom filters">
+    <button type="button">Pain</button>
+    <button type="button" class="is-selected">Swelling</button>
+    <button type="button">Rash</button>
+    <button type="button">Injury</button>
+    <button type="button">Numbness</button>
+    <button type="button">Mobility</button>
+    <button type="button">Infection</button>
+  </div>
+
+  <div class="selected-concern">
+    <span class="selected-concern__label">Selected area</span>
+    <strong>Left calf / ankle</strong>
+    <span>Swelling · wound · restricted mobility</span>
+  </div>
+</section>

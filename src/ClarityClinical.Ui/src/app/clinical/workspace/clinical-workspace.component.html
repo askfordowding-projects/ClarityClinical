@@ -1,0 +1,46 @@
+<main class="clinical-workspace">
+  <header class="workspace-header">
+    <div class="workspace-header__brand">
+      <strong>Clarity Clinical</strong>
+      <span>AI-assisted consultation workspace</span>
+    </div>
+
+    <div class="workspace-header__consultation">
+      <span>Urgent Treatment Centre</span>
+      <strong>{{ workspace()?.consultation?.status ?? 'Loading consultation' }}</strong>
+    </div>
+
+    <div class="workspace-header__clinician">
+      <span>Clinician</span>
+      <strong>Dr Eleanor Hughes</strong>
+    </div>
+  </header>
+
+  <div class="demo-banner" role="note">
+    <strong>DEMONSTRATION SYSTEM</strong>
+    <span>SYNTHETIC DATA ONLY</span>
+    <span>Not for clinical use</span>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="workspace-error" role="alert">{{ errorMessage() }}</div>
+  }
+
+  <div class="workspace-grid" [attr.aria-busy]="isLoading()">
+    <section class="workspace-region workspace-region--symptoms" data-region="symptoms">
+      <app-symptom-panel />
+    </section>
+
+    <section class="workspace-region workspace-region--consultation" data-region="consultation">
+      <app-consultation-panel [transcript]="workspace()?.transcript ?? []" />
+    </section>
+
+    <section class="workspace-region workspace-region--patient" data-region="patient-context">
+      <app-patient-context-panel [patient]="workspace()?.patient ?? null" />
+    </section>
+
+    <section class="workspace-region workspace-region--intelligence" data-region="clinical-intelligence">
+      <app-clinical-intelligence-panel [assessments]="workspace()?.assessments ?? []" />
+    </section>
+  </div>
+</main>
