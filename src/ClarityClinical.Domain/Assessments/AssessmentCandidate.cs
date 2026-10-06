@@ -4,7 +4,7 @@ public sealed class AssessmentCandidate
 {
     private readonly List<string> _changeReasons = [];
 
-    public AssessmentCandidate(string key, string displayName, int score)
+    public AssessmentCandidate(string key, string displayName, int currentScore)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
@@ -16,10 +16,10 @@ public sealed class AssessmentCandidate
             throw new ArgumentException("Assessment display name is required.", nameof(displayName));
         }
 
-        ValidateScore(score);
+        ValidateScore(currentScore);
         Key = key;
         DisplayName = displayName;
-        CurrentScore = score;
+        CurrentScore = currentScore;
         ScoreType = PriorityScoreType.IllustrativePriority;
     }
 
