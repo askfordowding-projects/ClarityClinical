@@ -1,0 +1,33 @@
+# .NET
+bin/
+obj/
+TestResults/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+coverage/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# Local configuration
+.env
+.env.*
+!.env.example
+appsettings.Local.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Worktrees / execution scratch
+.worktrees/
+.superpowers/

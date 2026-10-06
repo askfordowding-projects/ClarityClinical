@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ClarityClinical.Api/ClarityClinical.Api.csproj" />
+    <Project Path="src/ClarityClinical.Application/ClarityClinical.Application.csproj" />
+    <Project Path="src/ClarityClinical.Domain/ClarityClinical.Domain.csproj" />
+    <Project Path="src/ClarityClinical.Infrastructure/ClarityClinical.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ClarityClinical.Api.Tests/ClarityClinical.Api.Tests.csproj" />
+    <Project Path="tests/ClarityClinical.Application.Tests/ClarityClinical.Application.Tests.csproj" />
+    <Project Path="tests/ClarityClinical.Domain.Tests/ClarityClinical.Domain.Tests.csproj" />
+    <Project Path="tests/ClarityClinical.IntegrationTests/ClarityClinical.IntegrationTests.csproj" />
+  </Folder>
+</Solution>
