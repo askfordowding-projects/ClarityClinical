@@ -1,3 +1,5 @@
+using ClarityClinical.Application.Demo;
+using ClarityClinical.Infrastructure.Demo;
 using ClarityClinical.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +17,8 @@ public static class PersistenceExtensions
 
         services.AddDbContext<ClarityClinicalDbContext>(options =>
             options.UseNpgsql(connectionString));
+        services.AddScoped<IDemoScenarioRepository, DemoScenarioRepository>();
+        services.AddScoped<DemoScenarioSeeder>();
 
         return services;
     }

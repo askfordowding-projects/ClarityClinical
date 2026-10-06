@@ -1,5 +1,6 @@
 using ClarityClinical.Domain.Assessments;
 using ClarityClinical.Domain.Consultations;
+using ClarityClinical.Domain.Demo;
 using ClarityClinical.Domain.Patients;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,8 @@ public sealed class ClarityClinicalDbContext(DbContextOptions<ClarityClinicalDbC
     public DbSet<Patient> Patients => Set<Patient>();
     public DbSet<Consultation> Consultations => Set<Consultation>();
     public DbSet<ClinicalAssessment> ClinicalAssessments => Set<ClinicalAssessment>();
+    public DbSet<DemoScenario> DemoScenarios => Set<DemoScenario>();
+    public DbSet<DemoScenarioStep> DemoScenarioSteps => Set<DemoScenarioStep>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
