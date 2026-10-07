@@ -13,6 +13,7 @@ public sealed class ClarityClinicalDbContext(DbContextOptions<ClarityClinicalDbC
     public DbSet<Patient> Patients => Set<Patient>();
     public DbSet<Consultation> Consultations => Set<Consultation>();
     public DbSet<ClinicalAssessment> ClinicalAssessments => Set<ClinicalAssessment>();
+    public DbSet<ClinicianResponse> ClinicianResponses => Set<ClinicianResponse>();
     public DbSet<DemoScenario> DemoScenarios => Set<DemoScenario>();
     public DbSet<DemoScenarioStep> DemoScenarioSteps => Set<DemoScenarioStep>();
     public DbSet<DemoSession> DemoSessions => Set<DemoSession>();

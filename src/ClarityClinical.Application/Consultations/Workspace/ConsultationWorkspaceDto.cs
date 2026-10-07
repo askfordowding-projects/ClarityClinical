@@ -1,4 +1,5 @@
 using ClarityClinical.Application.ClinicalIntelligence;
+using ClarityClinical.Domain.Assessments;
 
 namespace ClarityClinical.Application.Consultations.Workspace;
 
@@ -27,6 +28,12 @@ public sealed record EvidenceDto(
     string DisplayText,
     string Source);
 
+public sealed record ClinicianResponseDto(
+    string ResponseType,
+    string? Rationale,
+    string? ModifiedAction,
+    DateTimeOffset RespondedAt);
+
 public sealed record AssessmentCandidateDto(
     string Key,
     string DisplayName,
@@ -37,7 +44,8 @@ public sealed record AssessmentCandidateDto(
     IReadOnlyList<string> MissingEvidence,
     IReadOnlyList<string> SuggestedChecks,
     IReadOnlyList<string> Warnings,
-    string? ChangeReason);
+    string? ChangeReason,
+    ClinicianResponseDto? Response);
 
 public sealed record WorkspacePermissionsDto(
     bool CanRecordObservation,
@@ -53,7 +61,9 @@ public sealed record ConsultationWorkspaceDto(
     IReadOnlyList<string> SuggestedChecks,
     WorkspacePermissionsDto Permissions)
 {
-    public static AssessmentCandidateDto MapCandidate(ClinicalAssessmentCandidateResult candidate) =>
+    public static AssessmentCandidateDto MapCandidate(
+        ClinicalAssessmentCandidateResult candidate,
+        ClinicianResponse? response) =>
         new(
             candidate.Key,
             candidate.DisplayName,
@@ -69,5 +79,12 @@ public sealed record ConsultationWorkspaceDto(
             candidate.MissingEvidence,
             candidate.SuggestedChecks,
             candidate.Warnings,
-            candidate.ChangeReason);
+            candidate.ChangeReason,
+            response is null
+                ? null
+                : new ClinicianResponseDto(
+                    response.ResponseType.ToString(),
+                    response.Rationale,
+                    response.ModifiedAction,
+                    response.RespondedAt));
 }

@@ -27,6 +27,20 @@ export interface ClinicalEvidence {
   source: string;
 }
 
+export interface ClinicianResponse {
+  responseType: string;
+  rationale: string | null;
+  modifiedAction: string | null;
+  respondedAt: string;
+}
+
+export interface ClinicianResponseSubmission {
+  recommendationKey: string;
+  responseType: 'Accepted' | 'Modified' | 'Rejected' | 'Deferred';
+  rationale: string | null;
+  modifiedAction: string | null;
+}
+
 export interface AssessmentCandidate {
   key: string;
   displayName: string;
@@ -38,6 +52,7 @@ export interface AssessmentCandidate {
   suggestedChecks: string[];
   warnings: string[];
   changeReason: string | null;
+  response: ClinicianResponse | null;
 }
 
 export interface WorkspacePermissions {

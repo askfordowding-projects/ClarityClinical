@@ -1,12 +1,14 @@
 using ClarityClinical.Application.Audit;
 using ClarityClinical.Application.ClinicalIntelligence;
 using ClarityClinical.Application.Consultations;
+using ClarityClinical.Application.Consultations.Responses;
 using ClarityClinical.Application.Consultations.Workspace;
 using ClarityClinical.Application.Demo;
 using ClarityClinical.Application.Identity;
 using ClarityClinical.Application.Patients;
 using ClarityClinical.Infrastructure.Audit;
 using ClarityClinical.Infrastructure.Consultations;
+using ClarityClinical.Infrastructure.Consultations.Responses;
 using ClarityClinical.Infrastructure.Demo;
 using ClarityClinical.Infrastructure.Identity;
 using ClarityClinical.Infrastructure.Patients;
@@ -34,8 +36,10 @@ public static class PersistenceExtensions
         services.AddScoped<ICurrentUserAccessor, SystemCurrentUserAccessor>();
         services.AddScoped<IAuditWriter, AuditWriter>();
         services.AddScoped<IConsultationRepository, ConsultationRepository>();
+        services.AddScoped<IClinicianResponseRepository, ClinicianResponseRepository>();
         services.AddScoped<IPatientRepository, PatientRepository>();
         services.AddScoped<ConsultationLifecycleService>();
+        services.AddScoped<RecordClinicianResponseService>();
         services.AddScoped<GetConsultationWorkspaceQuery>();
         services.AddScoped<AddClinicalFactService>();
         services.AddSingleton<MiguelScenarioRuleSet>();

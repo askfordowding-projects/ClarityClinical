@@ -1,4 +1,5 @@
 using ClarityClinical.Application.ClinicalIntelligence;
+using ClarityClinical.Application.Consultations.Responses;
 using ClarityClinical.Application.Patients;
 using ClarityClinical.Domain.Consultations;
 
@@ -7,7 +8,8 @@ namespace ClarityClinical.Application.Consultations.Workspace;
 public sealed class GetConsultationWorkspaceQuery(
     IConsultationRepository consultationRepository,
     IPatientRepository patientRepository,
-    IClinicalIntelligenceProvider clinicalIntelligenceProvider)
+    IClinicalIntelligenceProvider clinicalIntelligenceProvider,
+    IClinicianResponseRepository responseRepository)
 {
     public async Task<ConsultationWorkspaceDto> ExecuteAsync(
         Guid consultationId,
@@ -21,8 +23,13 @@ public sealed class GetConsultationWorkspaceQuery(
             consultation,
             cancellationToken);
 
+        var responses = await responseRepository.GetLatestByConsultationAsync(
+            consultationId,
+            cancellationToken);
         var assessments = intelligence.Candidates
-            .Select(ConsultationWorkspaceDto.MapCandidate)
+            .Select(candidate => ConsultationWorkspaceDto.MapCandidate(
+                candidate,
+                responses.TryGetValue(candidate.Key, out var response) ? response : null))
             .ToArray();
         var isInProgress = consultation.Status == ConsultationStatus.InProgress;
 

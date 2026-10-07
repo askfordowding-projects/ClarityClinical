@@ -18,34 +18,105 @@
           <strong class="assessment-card__score">{{ assessment.currentScore }}%</strong>
         </header>
 
-        @if (assessment.changeReason) {
-          <p class="assessment-card__change">{{ assessment.changeReason }}</p>
-        }
-
-        <div class="assessment-card__evidence">
-          <strong>Supporting evidence</strong>
-          @if (assessment.supportingEvidence.length === 0) {
-            <span>No supporting facts recorded yet.</span>
-          } @else {
-            <ul>
-              @for (evidence of assessment.supportingEvidence; track evidence.factCode) {
-                <li>{{ evidence.displayText }} <small>{{ evidence.source }}</small></li>
-              }
-            </ul>
-          }
-        </div>
-
-        @if (assessment.missingEvidence.length > 0) {
-          <div class="assessment-card__missing">
-            <strong>Still required</strong>
-            <span>{{ assessment.missingEvidence.join(' � ') }}</span>
+        @if (assessment.response) {
+          <div class="assessment-card__response">
+            <strong>Clinician response: {{ assessment.response.responseType }}</strong>
+            @if (assessment.response.rationale) {
+              <span>{{ assessment.response.rationale }}</span>
+            }
+            @if (assessment.response.modifiedAction) {
+              <span>Modified action: {{ assessment.response.modifiedAction }}</span>
+            }
           </div>
         }
 
         <div class="assessment-card__actions">
-          <button type="button">Why this score?</button>
-          <button type="button">Why did this change?</button>
+          <button type="button" (click)="toggleScoreExplanation(assessment.key)">
+            Why this score?
+          </button>
+          <button type="button" (click)="toggleChangeExplanation(assessment.key)">
+            Why did this change?
+          </button>
         </div>
+
+        @if (scoreExplanations.has(assessment.key)) {
+          <div class="assessment-card__explanation" data-explanation="score">
+            <div class="assessment-card__evidence">
+              <strong>Supporting evidence</strong>
+              @if (assessment.supportingEvidence.length === 0) {
+                <span>No supporting facts recorded yet.</span>
+              } @else {
+                <ul>
+                  @for (evidence of assessment.supportingEvidence; track evidence.factCode) {
+                    <li>{{ evidence.displayText }} <small>{{ evidence.source }}</small></li>
+                  }
+                </ul>
+              }
+            </div>
+
+            @if (assessment.missingEvidence.length > 0) {
+              <div class="assessment-card__missing">
+                <strong>Still required</strong>
+                <ul>
+                  @for (missing of assessment.missingEvidence; track missing) {
+                    <li>{{ missing }}</li>
+                  }
+                </ul>
+              </div>
+            }
+
+            @if (assessment.suggestedChecks.length > 0) {
+              <div class="assessment-card__missing">
+                <strong>Suggested checks</strong>
+                <ul>
+                  @for (check of assessment.suggestedChecks; track check) {
+                    <li>{{ check }}</li>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+        }
+
+        @if (changeExplanations.has(assessment.key)) {
+          <p class="assessment-card__change" data-explanation="change">
+            {{ assessment.changeReason ?? 'No score change has been recorded for this assessment yet.' }}
+          </p>
+        }
+
+        <div class="assessment-card__decision-actions" aria-label="Clinician response">
+          <button type="button" (click)="submitResponse(assessment, 'Accepted')">Accept</button>
+          <button type="button" (click)="startModification(assessment)">Modify</button>
+          <button type="button" (click)="submitResponse(assessment, 'Rejected')">Reject</button>
+          <button type="button" (click)="submitResponse(assessment, 'Deferred')">Defer</button>
+        </div>
+
+        @if (modifyingKey === assessment.key) {
+          <div class="assessment-card__modify-form">
+            <label>
+              <span>Rationale</span>
+              <textarea
+                name="rationale"
+                rows="2"
+                [(ngModel)]="rationale"
+                placeholder="Why are you changing the recommendation?"></textarea>
+            </label>
+            <label>
+              <span>Changed action</span>
+              <input
+                name="modifiedAction"
+                type="text"
+                [(ngModel)]="modifiedAction"
+                placeholder="Enter the action you intend to take" />
+            </label>
+            <button
+              type="button"
+              [disabled]="!canSaveModification()"
+              (click)="submitModification(assessment)">
+              Save modification
+            </button>
+          </div>
+        }
       </article>
     } @empty {
       <div class="assessment-grid__empty">Assessment candidates will appear here.</div>

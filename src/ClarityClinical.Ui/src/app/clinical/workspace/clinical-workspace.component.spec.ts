@@ -108,7 +108,8 @@ describe('ClinicalWorkspaceComponent', () => {
       missingEvidence: [],
       suggestedChecks: [],
       warnings: [],
-      changeReason: null
+      changeReason: null,
+      response: null
     };
   }
 });

@@ -3,6 +3,7 @@ using System;
 using ClarityClinical.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ClarityClinical.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ClarityClinicalDbContext))]
-    partial class ClarityClinicalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261006234520_AddClinicianResponses")]
+    partial class AddClinicianResponses
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
