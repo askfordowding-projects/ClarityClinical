@@ -44,8 +44,13 @@ public sealed class PublicSessionIsolationTests
         var consultations = services.GetRequiredService<IConsultationRepository>();
         var a = await consultations.GetAsync(visitorA.ConsultationId, CancellationToken.None);
         var b = await consultations.GetAsync(visitorB.ConsultationId, CancellationToken.None);
-        Assert.Single(a!.Facts);
-        Assert.Empty(b!.Facts);
+        Assert.Equal(4, a!.Facts.Count);
+        Assert.Equal(3, b!.Facts.Count);
+        Assert.Contains(a.Facts, fact => fact.Code == "unilateral-calf-swelling");
+        Assert.DoesNotContain(b.Facts, fact => fact.Code == "unilateral-calf-swelling");
+        Assert.All(
+            b.Facts,
+            fact => Assert.Equal(ClinicalFactSource.EstablishedRecord, fact.Source));
     }
 
     [Fact]

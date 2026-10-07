@@ -22,6 +22,7 @@ export interface TranscriptEntry {
 }
 
 export interface ClinicalEvidence {
+  factId: string;
   factCode: string;
   displayText: string;
   source: string;

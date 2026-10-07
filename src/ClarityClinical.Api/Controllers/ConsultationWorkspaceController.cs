@@ -12,6 +12,7 @@ namespace ClarityClinical.Api.Controllers;
 public sealed class ConsultationWorkspaceController(
     GetConsultationWorkspaceQuery workspaceQuery,
     AddClinicalFactService addClinicalFactService,
+    ExcludeClinicalFactService excludeClinicalFactService,
     DemoConsultationAccess demoAccess) : ControllerBase
 {
     [HttpGet("workspace")]
@@ -56,6 +57,37 @@ public sealed class ConsultationWorkspaceController(
             ClinicalFactSource.ClinicalObservation,
             cancellationToken);
 
+    [HttpPost("clinical-facts/{factId:guid}/exclude")]
+    public async Task<IActionResult> ExcludeClinicalFact(
+        Guid consultationId,
+        Guid factId,
+        CancellationToken cancellationToken)
+    {
+        if (!await demoAccess.CanAccessAsync(consultationId, cancellationToken))
+        {
+            return NotFoundProblem();
+        }
+
+        try
+        {
+            await excludeClinicalFactService.ExcludeAsync(
+                consultationId,
+                factId,
+                cancellationToken);
+            return Ok(await workspaceQuery.ExecuteAsync(consultationId, cancellationToken));
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFoundProblem();
+        }
+        catch (InvalidOperationException exception)
+        {
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Invalid consultation state",
+                detail: exception.Message);
+        }
+    }
     private async Task<IActionResult> AddFactAndReturnWorkspaceAsync(
         Guid consultationId,
         ClinicalFactRequest request,

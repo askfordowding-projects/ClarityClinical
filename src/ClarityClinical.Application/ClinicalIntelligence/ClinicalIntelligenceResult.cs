@@ -4,6 +4,7 @@ using ClarityClinical.Domain.Consultations;
 namespace ClarityClinical.Application.ClinicalIntelligence;
 
 public sealed record ClinicalEvidenceResult(
+    Guid FactId,
     string FactCode,
     string DisplayText,
     ClinicalFactSource Source);

@@ -83,7 +83,7 @@ describe('ClinicalIntelligencePanelComponent', () => {
       previousScore: 67,
       scoreType: 'IllustrativePriority',
       supportingEvidence: [
-        { factCode: 'unilateral-calf-swelling', displayText: 'Unilateral calf swelling', source: 'PatientReport' }
+        { factId: '11111111-1111-1111-1111-111111111111', factCode: 'unilateral-calf-swelling', displayText: 'Unilateral calf swelling', source: 'PatientReport' }
       ],
       missingEvidence: ['Wells assessment'],
       suggestedChecks: ['Complete Wells assessment'],

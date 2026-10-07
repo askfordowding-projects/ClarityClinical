@@ -20,7 +20,7 @@ public sealed class DemoSessionService(
         var scenario = await scenarioRepository.GetCanonicalScenarioAsync(scenarioKey, cancellationToken)
             ?? throw new KeyNotFoundException($"Demo scenario '{scenarioKey}' was not found.");
         var now = DateTimeOffset.UtcNow;
-        var consultation = new Consultation(Guid.NewGuid(), scenario.PatientId);
+        var consultation = await CreateConsultationAsync(scenario.PatientId, now, cancellationToken);
         var session = new DemoSession(
             Guid.NewGuid(),
             scenario.Id,
@@ -61,7 +61,7 @@ public sealed class DemoSessionService(
             cancellationToken);
         var oldConsultationId = session.ConsultationId;
         var now = DateTimeOffset.UtcNow;
-        var replacement = new Consultation(Guid.NewGuid(), scenario.PatientId);
+        var replacement = await CreateConsultationAsync(scenario.PatientId, now, cancellationToken);
 
         dbContext.Consultations.Add(replacement);
         session.ReplaceConsultation(replacement.Id, now, SessionLifetime);
@@ -87,6 +87,28 @@ public sealed class DemoSessionService(
                 && session.ExpiresAt > DateTimeOffset.UtcNow,
             cancellationToken);
 
+    private async Task<Consultation> CreateConsultationAsync(
+        Guid patientId,
+        DateTimeOffset occurredAt,
+        CancellationToken cancellationToken)
+    {
+        var patient = await dbContext.Patients
+            .Include(item => item.Conditions)
+            .SingleAsync(item => item.Id == patientId, cancellationToken);
+        var consultation = new Consultation(Guid.NewGuid(), patientId);
+
+        foreach (var condition in patient.Conditions)
+        {
+            consultation.AddFact(new ClinicalFact(
+                Guid.NewGuid(),
+                condition.Code,
+                condition.DisplayName,
+                ClinicalFactSource.EstablishedRecord,
+                occurredAt));
+        }
+
+        return consultation;
+    }
     public async Task<int> DeleteExpiredAsync(
         DateTimeOffset now,
         CancellationToken cancellationToken)

@@ -90,7 +90,7 @@ public sealed class MiguelScenarioRuleSet
             displayName,
             score,
             supportingFacts
-                .Select(fact => new ClinicalEvidenceResult(fact.Code, fact.DisplayText, fact.Source))
+                .Select(fact => new ClinicalEvidenceResult(fact.Id, fact.Code, fact.DisplayText, fact.Source))
                 .ToArray(),
             missingEvidence,
             suggestedChecks,

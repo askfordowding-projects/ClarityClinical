@@ -1,6 +1,7 @@
 using ClarityClinical.Api.Background;
 using ClarityClinical.Api.Configuration;
 using ClarityClinical.Api.Identity;
+using ClarityClinical.Api.Health;
 using ClarityClinical.Application.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddClarityClinicalPersistence(builder.Configuration);
+builder.Services.AddClarityClinicalHealthChecks();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserAccessor, HttpCurrentUserAccessor>();
 builder.Services.AddScoped<DemoConsultationAccess>();
@@ -44,5 +46,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapClarityClinicalHealthChecks();
 
 app.Run();

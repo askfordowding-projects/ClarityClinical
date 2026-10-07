@@ -24,6 +24,7 @@ public sealed record TranscriptEntryDto(
     bool Corrected);
 
 public sealed record EvidenceDto(
+    Guid FactId,
     string FactCode,
     string DisplayText,
     string Source);
@@ -72,6 +73,7 @@ public sealed record ConsultationWorkspaceDto(
             candidate.ScoreType.ToString(),
             candidate.SupportingEvidence
                 .Select(evidence => new EvidenceDto(
+                    evidence.FactId,
                     evidence.FactCode,
                     evidence.DisplayText,
                     evidence.Source.ToString()))

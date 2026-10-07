@@ -56,12 +56,49 @@ public sealed class WorkspaceContractTests
         var dvt = Assert.Single(workspace.Assessments, value => value.Key == "dvt");
         Assert.Equal(48, dvt.CurrentScore);
         Assert.Equal("IllustrativePriority", dvt.ScoreType);
+        Assert.All(dvt.SupportingEvidence, evidence => Assert.NotEqual(Guid.Empty, evidence.FactId));
         Assert.Contains(
             dvt.SupportingEvidence,
             evidence => evidence.DisplayText == "Unilateral calf swelling"
                 && evidence.Source == "ClinicalObservation");
     }
 
+
+    [Fact]
+    public async Task Excluding_prolonged_travel_removes_its_DVT_contribution()
+    {
+        await using var context = await ApiTestContext.CreateAsync();
+        using var client = context.CreateClient();
+        await LoginAsClinicianAsync(client);
+        var consultationId = await context.CreateMiguelDemoConsultationAsync(client);
+        await StartConsultationAsync(client, consultationId);
+
+        await client.PostAsJsonAsync(
+            $"/api/consultations/{consultationId}/observations",
+            new { code = "unilateral-calf-swelling", displayText = "Unilateral calf swelling" });
+        var travelResponse = await client.PostAsJsonAsync(
+            $"/api/consultations/{consultationId}/patient-reports",
+            new { code = "recent-prolonged-travel", displayText = "Recent prolonged travel" });
+        travelResponse.EnsureSuccessStatusCode();
+        var before = await travelResponse.Content.ReadFromJsonAsync<WorkspaceResponse>();
+        var dvtBefore = Assert.Single(before!.Assessments, value => value.Key == "dvt");
+        Assert.Equal(67, dvtBefore.CurrentScore);
+        var travelFact = Assert.Single(
+            dvtBefore.SupportingEvidence,
+            evidence => evidence.FactCode == "recent-prolonged-travel");
+        Assert.NotEqual(Guid.Empty, travelFact.FactId);
+
+        var excludeResponse = await client.PostAsync(
+            $"/api/consultations/{consultationId}/clinical-facts/{travelFact.FactId}/exclude",
+            null);
+
+        Assert.Equal(HttpStatusCode.OK, excludeResponse.StatusCode);
+        var after = await excludeResponse.Content.ReadFromJsonAsync<WorkspaceResponse>();
+        var dvtAfter = Assert.Single(after!.Assessments, value => value.Key == "dvt");
+        Assert.Equal(48, dvtAfter.CurrentScore);
+        Assert.Equal(67, dvtAfter.PreviousScore);
+        Assert.Contains("removed from clinical reasoning", dvtAfter.ChangeReason);
+    }
     private static async Task LoginAsClinicianAsync(HttpClient client)
     {
         var response = await client.PostAsJsonAsync(
@@ -102,7 +139,7 @@ public sealed class WorkspaceContractTests
         IReadOnlyList<string> SuggestedChecks,
         IReadOnlyList<string> Warnings,
         string? ChangeReason);
-    private sealed record EvidenceResponse(string FactCode, string DisplayText, string Source);
+    private sealed record EvidenceResponse(Guid FactId, string FactCode, string DisplayText, string Source);
     private sealed record PermissionsResponse(
         bool CanRecordObservation,
         bool CanAddPatientReport,
