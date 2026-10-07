@@ -1,4 +1,4 @@
-﻿# Clarity Clinical
+# Clarity Clinical
 
 Clarity Clinical is a research and demonstration prototype exploring how clinical decision support can improve consultation workflows while preserving clinician judgement, patient involvement and meaningful human oversight.
 
@@ -19,6 +19,8 @@ The current vertical slice implements the Miguel Santos synthetic consultation u
 - an append-only application audit trail
 - public demo role selection with server-side role enforcement
 - PostgreSQL persistence
+- Spanish ↔ English browser speech translation with persisted transcript segments
+- typed transcript fallback when live speech is unavailable
 - liveness and readiness health checks
 
 The percentages displayed by the prototype are **illustrative priority scores**. They are not calibrated probabilities of disease and must not be interpreted as validated clinical risk estimates.
@@ -87,6 +89,20 @@ Health endpoints:
 
 `/health/live` reports whether the API process is running. `/health/ready` also verifies PostgreSQL connectivity.
 
+### Speech translation
+
+Live speech is optional. The browser obtains a short-lived authorization token from the API; the Speech subscription key remains server-side and must never be committed to source control.
+
+Configure the backend with environment variables or user secrets:
+
+```text
+Speech__SubscriptionKey=<secret>
+Speech__Region=<azure-region>
+```
+
+Without these settings the API returns `503 Service Unavailable` for speech authorization and the consultation remains usable through typed transcript input.
+
+Patient speech is configured as Spanish to English. Clinician speech is configured as English to Spanish. Raw microphone audio is not persisted by Clarity Clinical.
 ### Frontend
 
 ```powershell

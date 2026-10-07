@@ -99,6 +99,39 @@ public sealed class WorkspaceContractTests
         Assert.Equal(67, dvtAfter.PreviousScore);
         Assert.Contains("removed from clinical reasoning", dvtAfter.ChangeReason);
     }
+
+    [Fact]
+    public async Task Final_translated_speech_segment_is_persisted_and_returned_in_workspace()
+    {
+        await using var context = await ApiTestContext.CreateAsync();
+        using var client = context.CreateClient();
+        await LoginAsClinicianAsync(client);
+        var consultationId = await context.CreateMiguelDemoConsultationAsync(client);
+        await StartConsultationAsync(client, consultationId);
+
+        var response = await client.PostAsJsonAsync(
+            $"/api/consultations/{consultationId}/transcript-segments",
+            new
+            {
+                speakerRole = "Patient",
+                sourceLanguage = "es-ES",
+                originalText = "Tengo la pierna izquierda hinchada desde ayer.",
+                translatedText = "My left leg has been swollen since yesterday.",
+                recognitionConfidence = 0.94
+            });
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var workspace = await response.Content.ReadFromJsonAsync<WorkspaceResponse>();
+        var segment = Assert.Single(workspace!.Transcript);
+        Assert.NotEqual(Guid.Empty, segment.Id);
+        Assert.Equal("Patient", segment.SpeakerRole);
+        Assert.Equal("es-ES", segment.OriginalLanguage);
+        Assert.Equal("Tengo la pierna izquierda hinchada desde ayer.", segment.OriginalText);
+        Assert.Equal("My left leg has been swollen since yesterday.", segment.TranslatedText);
+        Assert.NotNull(segment.RecognitionConfidence);
+        Assert.Equal(0.94, segment.RecognitionConfidence.Value, 2);
+        Assert.False(segment.Corrected);
+    }
     private static async Task LoginAsClinicianAsync(HttpClient client)
     {
         var response = await client.PostAsJsonAsync(
@@ -116,6 +149,7 @@ public sealed class WorkspaceContractTests
     private sealed record WorkspaceResponse(
         ConsultationResponse Consultation,
         PatientResponse Patient,
+        IReadOnlyList<TranscriptResponse> Transcript,
         IReadOnlyList<AssessmentResponse> Assessments,
         PermissionsResponse Permissions);
 
@@ -128,6 +162,14 @@ public sealed class WorkspaceContractTests
         IReadOnlyList<NamedValueResponse> Allergies,
         IReadOnlyList<NamedValueResponse> Medications);
     private sealed record NamedValueResponse(string Code, string DisplayName);
+    private sealed record TranscriptResponse(
+        Guid Id,
+        string SpeakerRole,
+        string OriginalLanguage,
+        string OriginalText,
+        string? TranslatedText,
+        double? RecognitionConfidence,
+        bool Corrected);
     private sealed record AssessmentResponse(
         string Key,
         string DisplayName,

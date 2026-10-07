@@ -6,6 +6,7 @@ using ClarityClinical.Application.Consultations.Workspace;
 using ClarityClinical.Application.Demo;
 using ClarityClinical.Application.Identity;
 using ClarityClinical.Application.Patients;
+using ClarityClinical.Application.Transcripts;
 using ClarityClinical.Infrastructure.Audit;
 using ClarityClinical.Infrastructure.Consultations;
 using ClarityClinical.Infrastructure.Consultations.Responses;
@@ -13,6 +14,7 @@ using ClarityClinical.Infrastructure.Demo;
 using ClarityClinical.Infrastructure.Identity;
 using ClarityClinical.Infrastructure.Patients;
 using ClarityClinical.Infrastructure.Persistence;
+using ClarityClinical.Infrastructure.Transcripts;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClarityClinical.Api.Configuration;
@@ -38,11 +40,13 @@ public static class PersistenceExtensions
         services.AddScoped<IConsultationRepository, ConsultationRepository>();
         services.AddScoped<IClinicianResponseRepository, ClinicianResponseRepository>();
         services.AddScoped<IPatientRepository, PatientRepository>();
+        services.AddScoped<ITranscriptSegmentRepository, TranscriptSegmentRepository>();
         services.AddScoped<ConsultationLifecycleService>();
         services.AddScoped<RecordClinicianResponseService>();
         services.AddScoped<GetConsultationWorkspaceQuery>();
         services.AddScoped<AddClinicalFactService>();
         services.AddScoped<ExcludeClinicalFactService>();
+        services.AddScoped<AddTranscriptSegmentService>();
         services.AddSingleton<MiguelScenarioRuleSet>();
         services.AddScoped<IClinicalIntelligenceProvider, DeterministicClinicalIntelligenceProvider>();
 

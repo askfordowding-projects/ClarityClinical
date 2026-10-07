@@ -32,7 +32,10 @@
     </section>
 
     <section class="workspace-region workspace-region--consultation" data-region="consultation">
-      <app-consultation-panel [transcript]="workspace()?.transcript ?? []" />
+      <app-consultation-panel
+        [consultationId]="workspace()?.consultation?.id ?? ''"
+        [transcript]="workspace()?.transcript ?? []"
+        (workspaceUpdated)="workspace.set($event)" />
     </section>
 
     <section class="workspace-region workspace-region--patient" data-region="patient-context">

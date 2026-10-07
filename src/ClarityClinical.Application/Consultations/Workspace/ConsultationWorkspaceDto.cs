@@ -21,6 +21,7 @@ public sealed record TranscriptEntryDto(
     string OriginalLanguage,
     string OriginalText,
     string? TranslatedText,
+    double? RecognitionConfidence,
     bool Corrected);
 
 public sealed record EvidenceDto(

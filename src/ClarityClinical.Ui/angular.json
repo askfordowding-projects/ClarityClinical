@@ -32,6 +32,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "microsoft.cognitiveservices.speech.sdk.bundle-min.js",
+                "input": "node_modules/microsoft-cognitiveservices-speech-sdk/distrib/browser",
+                "output": "speech-sdk"
               }
             ],
             "styles": [
@@ -91,6 +96,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "microsoft.cognitiveservices.speech.sdk.bundle-min.js",
+                "input": "node_modules/microsoft-cognitiveservices-speech-sdk/distrib/browser",
+                "output": "speech-sdk"
               }
             ],
             "styles": [

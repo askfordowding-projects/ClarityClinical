@@ -4,17 +4,42 @@
       <p>Live consultation</p>
       <h2 id="consultation-title">Conversation</h2>
     </div>
-    <span class="listening-state" aria-label="Microphone is not currently listening">
+    <span class="listening-state" [attr.aria-label]="isListening() ? 'Microphone is listening' : 'Microphone is not currently listening'">
       <span class="listening-state__dot"></span>
-      Ready to listen
+      {{ isListening() ? 'Listening' : 'Ready to listen' }}
     </span>
   </header>
 
+  <div class="speech-toolbar" aria-label="Speech controls">
+    <label>
+      <span>Speaker</span>
+      <select [value]="selectedSpeaker()" [disabled]="isListening()" (change)="changeSpeaker($event)">
+        <option value="Patient">Patient</option>
+        <option value="Clinician">Clinician</option>
+      </select>
+    </label>
+    <span class="speech-toolbar__direction">{{ languageLabel() }}</span>
+  </div>
+
+  @if (speechError()) {
+    <div class="speech-error" role="alert">{{ speechError() }}</div>
+  }
+
+  @if (interimText()) {
+    <div class="transcript-entry transcript-entry--interim" aria-live="polite">
+      <div class="transcript-entry__meta">
+        <strong>{{ selectedSpeaker() }}</strong>
+        <span>Listening…</span>
+      </div>
+      <p>{{ interimText() }}</p>
+    </div>
+  }
+
   <div class="transcript" aria-live="polite">
-    @if (transcript.length === 0) {
+    @if (transcript.length === 0 && !interimText()) {
       <div class="transcript__empty">
         <strong>Consultation transcript</strong>
-        <span>Start listening or use the scripted demonstration to begin.</span>
+        <span>Start listening or type a statement to begin.</span>
       </div>
     } @else {
       @for (entry of transcript; track entry.id) {
@@ -35,8 +60,29 @@
     }
   </div>
 
+  <div class="typed-fallback">
+    <label for="typed-statement">Typed fallback</label>
+    <textarea
+      id="typed-statement"
+      data-input="typed-statement"
+      rows="2"
+      [value]="typedStatement()"
+      (input)="updateTypedStatement($event)"
+      placeholder="Type the statement if live speech is unavailable"></textarea>
+    <button
+      type="button"
+      class="secondary"
+      data-action="add-typed-statement"
+      [disabled]="!typedStatement().trim()"
+      (click)="addTypedStatement()">Add typed statement</button>
+  </div>
+
   <div class="consultation-controls" aria-label="Consultation controls">
-    <button type="button">Start listening</button>
+    @if (!isListening()) {
+      <button type="button" data-action="start-listening" (click)="startListening()">Start listening</button>
+    } @else {
+      <button type="button" data-action="stop-listening" (click)="stopListening()">Stop listening</button>
+    }
     <button type="button" class="secondary">Correct transcript</button>
     <button type="button" class="secondary">Add clinical note</button>
   </div>

@@ -29,7 +29,7 @@ public sealed class ApiTestContext : IAsyncDisposable
 
     public ClarityClinicalWebApplicationFactory Factory { get; }
 
-    public static async Task<ApiTestContext> CreateAsync()
+    public static async Task<ApiTestContext> CreateAsync(Action<IServiceCollection>? configureServices = null)
     {
         var databaseName = $"clarityclinical_api_test_{Guid.NewGuid():N}";
         var adminConnection = new NpgsqlConnection(AdminConnectionString);
@@ -43,7 +43,7 @@ public sealed class ApiTestContext : IAsyncDisposable
 
         var connectionString =
             $"Host=127.0.0.1;Port=5432;Username=postgres;Database={databaseName}";
-        var factory = new ClarityClinicalWebApplicationFactory(connectionString);
+        var factory = new ClarityClinicalWebApplicationFactory(connectionString, configureServices);
 
         await using var scope = factory.Services.CreateAsyncScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ClarityClinicalDbContext>();
@@ -107,12 +107,18 @@ public sealed class ApiTestContext : IAsyncDisposable
     }
 }
 
-public sealed class ClarityClinicalWebApplicationFactory(string connectionString)
+public sealed class ClarityClinicalWebApplicationFactory(
+    string connectionString,
+    Action<IServiceCollection>? configureServices = null)
     : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
         builder.UseSetting("ConnectionStrings:ClarityClinical", connectionString);
+        if (configureServices is not null)
+        {
+            builder.ConfigureServices(configureServices);
+        }
     }
 }

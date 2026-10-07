@@ -2,6 +2,7 @@ using ClarityClinical.Application.ClinicalIntelligence;
 using ClarityClinical.Application.Consultations.Responses;
 using ClarityClinical.Application.Patients;
 using ClarityClinical.Domain.Consultations;
+using ClarityClinical.Application.Transcripts;
 
 namespace ClarityClinical.Application.Consultations.Workspace;
 
@@ -9,7 +10,8 @@ public sealed class GetConsultationWorkspaceQuery(
     IConsultationRepository consultationRepository,
     IPatientRepository patientRepository,
     IClinicalIntelligenceProvider clinicalIntelligenceProvider,
-    IClinicianResponseRepository responseRepository)
+    IClinicianResponseRepository responseRepository,
+    ITranscriptSegmentRepository transcriptRepository)
 {
     public async Task<ConsultationWorkspaceDto> ExecuteAsync(
         Guid consultationId,
@@ -22,6 +24,8 @@ public sealed class GetConsultationWorkspaceQuery(
         var intelligence = await clinicalIntelligenceProvider.EvaluateAsync(
             consultation,
             cancellationToken);
+
+        var transcript = await transcriptRepository.GetByConsultationAsync(consultationId, cancellationToken);
 
         var responses = await responseRepository.GetLatestByConsultationAsync(
             consultationId,
@@ -42,7 +46,14 @@ public sealed class GetConsultationWorkspaceQuery(
                 patient.Conditions.Select(value => new NamedClinicalValueDto(value.Code, value.DisplayName)).ToArray(),
                 patient.Allergies.Select(value => new NamedClinicalValueDto(value.Code, value.DisplayName)).ToArray(),
                 patient.Medications.Select(value => new NamedClinicalValueDto(value.Code, value.DisplayName)).ToArray()),
-            [],
+            transcript.Select(segment => new TranscriptEntryDto(
+                segment.Id,
+                segment.SpeakerRole.ToString(),
+                segment.SourceLanguage,
+                segment.DisplayOriginalText,
+                segment.TranslatedText,
+                segment.RecognitionConfidence,
+                segment.Corrected)).ToArray(),
             assessments,
             assessments.SelectMany(value => value.Warnings).Distinct(StringComparer.Ordinal).ToArray(),
             assessments.SelectMany(value => value.SuggestedChecks).Distinct(StringComparer.Ordinal).ToArray(),

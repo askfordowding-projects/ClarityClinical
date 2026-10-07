@@ -3,6 +3,7 @@ using ClarityClinical.Domain.Audit;
 using ClarityClinical.Domain.Consultations;
 using ClarityClinical.Domain.Demo;
 using ClarityClinical.Domain.Patients;
+using ClarityClinical.Domain.Transcripts;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClarityClinical.Infrastructure.Persistence;
@@ -18,6 +19,7 @@ public sealed class ClarityClinicalDbContext(DbContextOptions<ClarityClinicalDbC
     public DbSet<DemoScenarioStep> DemoScenarioSteps => Set<DemoScenarioStep>();
     public DbSet<DemoSession> DemoSessions => Set<DemoSession>();
     public DbSet<AuditEvent> AuditEvents => Set<AuditEvent>();
+    public DbSet<TranscriptSegment> TranscriptSegments => Set<TranscriptSegment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

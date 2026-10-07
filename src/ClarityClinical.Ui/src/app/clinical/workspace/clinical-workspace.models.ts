@@ -18,6 +18,7 @@ export interface TranscriptEntry {
   originalLanguage: string;
   originalText: string;
   translatedText: string | null;
+  recognitionConfidence: number | null;
   corrected: boolean;
 }
 

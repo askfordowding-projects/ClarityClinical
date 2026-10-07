@@ -1,6 +1,8 @@
 using ClarityClinical.Api.Identity;
 using ClarityClinical.Application.Consultations.Workspace;
 using ClarityClinical.Domain.Consultations;
+using ClarityClinical.Domain.Transcripts;
+using ClarityClinical.Application.Transcripts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +15,7 @@ public sealed class ConsultationWorkspaceController(
     GetConsultationWorkspaceQuery workspaceQuery,
     AddClinicalFactService addClinicalFactService,
     ExcludeClinicalFactService excludeClinicalFactService,
+    AddTranscriptSegmentService addTranscriptSegmentService,
     DemoConsultationAccess demoAccess) : ControllerBase
 {
     [HttpGet("workspace")]
@@ -57,6 +60,47 @@ public sealed class ConsultationWorkspaceController(
             ClinicalFactSource.ClinicalObservation,
             cancellationToken);
 
+    [HttpPost("transcript-segments")]
+    public async Task<IActionResult> AddTranscriptSegment(
+        Guid consultationId,
+        TranscriptSegmentRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (!await demoAccess.CanAccessAsync(consultationId, cancellationToken))
+        {
+            return NotFoundProblem();
+        }
+
+        if (!Enum.TryParse<ConsultationSpeakerRole>(request.SpeakerRole, true, out var speakerRole))
+        {
+            return Problem(statusCode: 400, title: "Invalid speaker role");
+        }
+
+        try
+        {
+            await addTranscriptSegmentService.AddAsync(
+                consultationId,
+                speakerRole,
+                request.SourceLanguage,
+                request.OriginalText,
+                request.TranslatedText,
+                request.RecognitionConfidence,
+                cancellationToken);
+            return Ok(await workspaceQuery.ExecuteAsync(consultationId, cancellationToken));
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFoundProblem();
+        }
+        catch (InvalidOperationException exception)
+        {
+            return Problem(statusCode: 400, title: "Invalid consultation state", detail: exception.Message);
+        }
+        catch (ArgumentException exception)
+        {
+            return Problem(statusCode: 400, title: "Invalid transcript segment", detail: exception.Message);
+        }
+    }
     [HttpPost("clinical-facts/{factId:guid}/exclude")]
     public async Task<IActionResult> ExcludeClinicalFact(
         Guid consultationId,
@@ -135,4 +179,11 @@ public sealed class ConsultationWorkspaceController(
         detail: "The consultation was not found or is not available to this demo session.");
 
     public sealed record ClinicalFactRequest(string Code, string DisplayText);
+
+    public sealed record TranscriptSegmentRequest(
+        string SpeakerRole,
+        string SourceLanguage,
+        string OriginalText,
+        string? TranslatedText,
+        double? RecognitionConfidence);
 }

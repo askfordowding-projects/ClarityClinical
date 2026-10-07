@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddClarityClinicalPersistence(builder.Configuration);
+builder.Services.AddClarityClinicalSpeech(builder.Configuration);
 builder.Services.AddClarityClinicalHealthChecks();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserAccessor, HttpCurrentUserAccessor>();
