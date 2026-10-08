@@ -163,3 +163,18 @@ docker compose --env-file .env -f compose.public-demo.yml up --build -d
 The browser enters through the UI container. nginx proxies `/api/*` and `/health/*` to the API, so the demo remains on one public origin. PostgreSQL data is stored in a named persistent volume. The API starts only after the migration bundle completes successfully.
 
 Do not commit `.env` files, subscription keys, database passwords or deployment credentials. HTTPS is expected to be terminated by the hosting platform or external reverse proxy in front of the demo stack.
+
+
+## Build identity
+
+The public demo exposes safe reproducibility metadata at `/api/system/build` and through the **About this build** page. The response includes the application version, source commit, runtime environment, latest applied database migration, deterministic clinical rule-set version and build timestamp. It never exposes credentials or connection strings.
+
+For packaged public-demo deployments set:
+
+```text
+CLARITY_VERSION=0.1.0
+CLARITY_COMMIT=<git-sha>
+CLARITY_BUILD_TIMESTAMP=<ISO-8601 timestamp>
+```
+
+Local/test builds fall back to the assembly version, `development` commit identity and an unspecified build timestamp.

@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DemoRole, DemoSessionService } from '../../core/auth/demo-session.service';
 
 @Component({
   selector: 'app-demo-login',
   standalone: true,
+  imports: [RouterLink],
   templateUrl: './demo-login.component.html',
   styleUrl: './demo-login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

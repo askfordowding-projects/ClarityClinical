@@ -12,6 +12,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddClarityClinicalPersistence(builder.Configuration);
 builder.Services.AddClarityClinicalSpeech(builder.Configuration);
 builder.Services.AddClarityClinicalHealthChecks();
+builder.Services.AddClarityClinicalSystemInfo();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserAccessor, HttpCurrentUserAccessor>();
 builder.Services.AddScoped<DemoConsultationAccess>();

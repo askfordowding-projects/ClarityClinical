@@ -37,6 +37,9 @@ services:
       Speech__SubscriptionKey: ${SPEECH_SUBSCRIPTION_KEY:-}
       Speech__Region: ${SPEECH_REGION:-}
       ForwardedHeaders__Enabled: "true"
+      Build__Version: ${CLARITY_VERSION:-0.1.0}
+      Build__Commit: ${CLARITY_COMMIT:-development}
+      Build__Timestamp: ${CLARITY_BUILD_TIMESTAMP:-}
     depends_on:
       migrate:
         condition: service_completed_successfully

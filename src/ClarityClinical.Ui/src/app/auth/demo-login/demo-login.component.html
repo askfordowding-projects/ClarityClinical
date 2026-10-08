@@ -1,39 +1,79 @@
 <main class="demo-login">
+
   <section class="demo-login__panel" aria-labelledby="demo-login-title">
+
     <div class="demo-login__brand">
+
       <p class="demo-login__eyebrow">Clinical decision-support research prototype</p>
+
       <h1 id="demo-login-title">Clarity Clinical</h1>
+
       <p>
+
         Explore a synthetic consultation designed to demonstrate transparent,
+
         clinician-controlled decision support.
+
       </p>
+
     </div>
+
+
 
     <div class="demo-login__warning" role="note">
-      <strong>DEMONSTRATION SYSTEM · SYNTHETIC DATA ONLY</strong>
+
+      <strong>DEMONSTRATION SYSTEM &middot; SYNTHETIC DATA ONLY</strong>
+
       <span>Not clinically validated. Not for diagnosis or treatment.</span>
+
     </div>
+
+
 
     <div class="demo-login__roles" aria-label="Choose a demonstration role">
+
       <button type="button" class="demo-role" [disabled]="isSigningIn()" (click)="enterAs('Clinician')">
+
         <span class="demo-role__title">Enter as Clinician</span>
+
         <span>Run the Figure 1 consultation and review clinical reasoning support.</span>
+
       </button>
+
+
 
       <button type="button" class="demo-role" [disabled]="isSigningIn()" (click)="enterAs('Administrator')">
+
         <span class="demo-role__title">Enter as Administrator</span>
+
         <span>Review synthetic data, scenarios and governance information.</span>
+
       </button>
+
     </div>
 
+
+
     @if (errorMessage()) {
+
       <p class="demo-login__error" role="alert">{{ errorMessage() }}</p>
+
     }
 
+
+
+    <p><a routerLink="/about">About this build</a></p>
+
     <p class="demo-login__production-note">
+
       Public roles are intentionally open in this demonstration. A production deployment
+
       would use organisation-controlled authentication such as SSO, smartcard access or
+
       managed credentials.
+
     </p>
+
   </section>
+
 </main>

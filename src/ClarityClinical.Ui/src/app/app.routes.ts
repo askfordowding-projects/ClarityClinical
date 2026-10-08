@@ -5,6 +5,7 @@ import { ClinicalWorkspaceComponent } from './clinical/workspace/clinical-worksp
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: 'login', component: DemoLoginComponent },
+  { path: 'about', loadComponent: () => import('./core/about/about-build.component').then(module => module.AboutBuildComponent) },
   { path: 'clinical/consultations/:id', component: ClinicalWorkspaceComponent },
   {
     path: 'clinical/consultations',

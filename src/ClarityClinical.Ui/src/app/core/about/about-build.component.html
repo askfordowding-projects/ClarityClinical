@@ -1,0 +1,26 @@
+<main class="about-build">
+  <section class="about-build__panel">
+    <p class="about-build__eyebrow">Clarity Clinical</p>
+    <h1>About this build</h1>
+    <p class="about-build__intro">This page identifies the exact research prototype currently running.</p>
+
+    <div class="about-build__warning" role="note">
+      <strong>DEMONSTRATION SYSTEM &middot; SYNTHETIC DATA ONLY</strong>
+      <span>Not clinically validated. Not for diagnosis or treatment.</span>
+    </div>
+
+    @if (error()) { <p class="about-build__error" role="alert">{{ error() }}</p> }
+    @if (build(); as info) {
+      <dl class="build-grid">
+        <div><dt>Version</dt><dd>{{ info.version }}</dd></div>
+        <div><dt>Commit</dt><dd>{{ info.commit }}</dd></div>
+        <div><dt>Environment</dt><dd>{{ info.environment }}</dd></div>
+        <div><dt>Database migration</dt><dd>{{ info.latestMigration }}</dd></div>
+        <div><dt>Clinical rule set</dt><dd>{{ info.ruleSetVersion }}</dd></div>
+        <div><dt>Build timestamp</dt><dd>{{ info.buildTimestamp ?? 'Local / not supplied' }}</dd></div>
+      </dl>
+    }
+
+    <a routerLink="/login">Return to demo entry</a>
+  </section>
+</main>
