@@ -22,7 +22,9 @@ public sealed record TranscriptEntryDto(
     string OriginalText,
     string? TranslatedText,
     double? RecognitionConfidence,
-    bool Corrected);
+    bool Corrected,
+    bool IncludeInReasoning,
+    bool IsRedacted);
 
 public sealed record EvidenceDto(
     Guid FactId,

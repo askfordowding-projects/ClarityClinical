@@ -20,6 +20,7 @@ The current vertical slice implements the Miguel Santos synthetic consultation u
 - public demo role selection with server-side role enforcement
 - PostgreSQL persistence
 - Spanish ↔ English browser speech translation with persisted transcript segments
+- clinician-controlled transcript correction, speaker re-attribution, reasoning exclusion and redaction
 - typed transcript fallback when live speech is unavailable
 - liveness and readiness health checks
 

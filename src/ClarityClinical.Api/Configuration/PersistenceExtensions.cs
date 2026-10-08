@@ -47,6 +47,7 @@ public static class PersistenceExtensions
         services.AddScoped<AddClinicalFactService>();
         services.AddScoped<ExcludeClinicalFactService>();
         services.AddScoped<AddTranscriptSegmentService>();
+        services.AddScoped<ManageTranscriptSegmentService>();
         services.AddSingleton<MiguelScenarioRuleSet>();
         services.AddScoped<IClinicalIntelligenceProvider, DeterministicClinicalIntelligenceProvider>();
 

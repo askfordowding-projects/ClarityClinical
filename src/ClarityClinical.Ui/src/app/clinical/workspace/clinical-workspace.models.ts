@@ -20,6 +20,8 @@ export interface TranscriptEntry {
   translatedText: string | null;
   recognitionConfidence: number | null;
   corrected: boolean;
+  includeInReasoning: boolean;
+  isRedacted: boolean;
 }
 
 export interface ClinicalEvidence {

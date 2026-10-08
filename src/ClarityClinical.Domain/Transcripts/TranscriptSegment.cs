@@ -1,4 +1,4 @@
-﻿namespace ClarityClinical.Domain.Transcripts;
+namespace ClarityClinical.Domain.Transcripts;
 
 public sealed class TranscriptSegment
 {
@@ -53,4 +53,30 @@ public sealed class TranscriptSegment
     public bool Corrected => CorrectedText is not null;
     public bool IncludeInReasoning { get; private set; }
     public bool IsRedacted { get; private set; }
-}
+
+    public void Correct(string correctedText, string? translatedText)
+    {
+        if (string.IsNullOrWhiteSpace(correctedText))
+        {
+            throw new ArgumentException("Corrected transcript text is required.", nameof(correctedText));
+        }
+
+        CorrectedText = correctedText.Trim();
+        TranslatedText = string.IsNullOrWhiteSpace(translatedText) ? null : translatedText.Trim();
+    }
+
+    public void ChangeSpeaker(ConsultationSpeakerRole speakerRole)
+    {
+        SpeakerRole = speakerRole;
+    }
+
+    public void ExcludeFromReasoning()
+    {
+        IncludeInReasoning = false;
+    }
+
+    public void Redact()
+    {
+        IsRedacted = true;
+        IncludeInReasoning = false;
+    }}

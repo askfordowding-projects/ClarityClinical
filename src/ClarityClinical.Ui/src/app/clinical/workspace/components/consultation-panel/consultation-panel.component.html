@@ -11,9 +11,9 @@
   </header>
 
   <div class="speech-toolbar" aria-label="Speech controls">
-    <label>
+    <label class="form-label">
       <span>Speaker</span>
-      <select [value]="selectedSpeaker()" [disabled]="isListening()" (change)="changeSpeaker($event)">
+      <select class="form-control" [value]="selectedSpeaker()" [disabled]="isListening()" (change)="changeSpeaker($event)">
         <option value="Patient">Patient</option>
         <option value="Clinician">Clinician</option>
       </select>
@@ -43,17 +43,127 @@
       </div>
     } @else {
       @for (entry of transcript; track entry.id) {
-        <article class="transcript-entry">
+        <article class="transcript-entry" [class.transcript-entry--redacted]="entry.isRedacted">
           <div class="transcript-entry__meta">
             <strong>{{ entry.speakerRole }}</strong>
             <span>{{ entry.originalLanguage }}</span>
             @if (entry.corrected) {
-              <span>Corrected</span>
+              <span class="transcript-badge">Corrected</span>
+            }
+            @if (!entry.includeInReasoning && !entry.isRedacted) {
+              <span class="transcript-badge transcript-badge--warning">Excluded from reasoning</span>
+            }
+            @if (entry.isRedacted) {
+              <span class="transcript-badge transcript-badge--redacted">Redacted</span>
             }
           </div>
+
           <p>{{ entry.originalText }}</p>
           @if (entry.translatedText) {
             <p class="transcript-entry__translation">{{ entry.translatedText }}</p>
+          }
+
+          @if (!entry.isRedacted) {
+            <div class="transcript-entry__actions" aria-label="Transcript actions">
+              <button type="button" data-action="correct-transcript" (click)="beginCorrection(entry)">Correct text</button>
+              <button type="button" data-action="change-speaker" (click)="beginSpeakerChange(entry)">Change speaker</button>
+              @if (entry.includeInReasoning) {
+                <button type="button" data-action="exclude-transcript" (click)="beginDisposition(entry, 'exclude')">Exclude from reasoning</button>
+              }
+              <button type="button" data-action="redact-transcript" (click)="beginDisposition(entry, 'redact')">Redact</button>
+            </div>
+          }
+
+          @if (activeSegmentId() === entry.id) {
+            <div class="transcript-action-editor">
+              @if (transcriptAction() === 'correct') {
+                <label class="form-label">
+                  <span>Corrected text</span>
+                  <textarea
+                    class="form-control"
+                    data-input="corrected-text"
+                    rows="2"
+                    [value]="correctedText()"
+                    (input)="updateCorrectedText($event)"></textarea>
+                </label>
+                <label class="form-label">
+                  <span>Corrected translation</span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    data-input="corrected-translation"
+                    [value]="correctedTranslation()"
+                    (input)="updateCorrectedTranslation($event)" />
+                </label>
+                <div class="transcript-action-editor__buttons">
+                  <button
+                    type="button"
+                    class="form-button"
+                    data-action="save-correction"
+                    [disabled]="actionBusy() || !correctedText().trim()"
+                    (click)="saveCorrection()">Save correction</button>
+                  <button type="button" class="form-button form-button--secondary" (click)="cancelTranscriptAction()">Cancel</button>
+                </div>
+              }
+
+              @if (transcriptAction() === 'speaker') {
+                <label class="form-label">
+                  <span>Speaker</span>
+                  <select
+                    class="form-control"
+                    data-input="segment-speaker"
+                    [value]="segmentSpeaker()"
+                    (change)="updateSegmentSpeaker($event)">
+                    @for (role of transcriptSpeakerRoles; track role) {
+                      <option [value]="role">{{ role }}</option>
+                    }
+                  </select>
+                </label>
+                <div class="transcript-action-editor__buttons">
+                  <button type="button" class="form-button" data-action="save-speaker" [disabled]="actionBusy()" (click)="saveSpeaker()">Save speaker</button>
+                  <button type="button" class="form-button form-button--secondary" (click)="cancelTranscriptAction()">Cancel</button>
+                </div>
+              }
+
+              @if (transcriptAction() === 'exclude' || transcriptAction() === 'redact') {
+                <label class="form-label">
+                  <span>Reason</span>
+                  <select
+                    class="form-control"
+                    data-input="disposition-reason"
+                    [value]="dispositionReason()"
+                    (change)="updateDispositionReason($event)">
+                    <option value="">Select a reason</option>
+                    @for (reason of dispositionReasons; track reason) {
+                      <option [value]="reason">{{ reason }}</option>
+                    }
+                  </select>
+                </label>
+
+                <div class="transcript-action-editor__buttons">
+                  @if (transcriptAction() === 'exclude') {
+                    <button
+                      type="button"
+                      class="form-button"
+                      data-action="confirm-exclude"
+                      [disabled]="actionBusy() || !dispositionReason()"
+                      (click)="confirmExclude()">Exclude from reasoning</button>
+                  } @else {
+                    <button
+                      type="button"
+                      class="form-button form-button--danger"
+                      data-action="confirm-redact"
+                      [disabled]="actionBusy() || !dispositionReason()"
+                      (click)="confirmRedact()">Redact statement</button>
+                  }
+                  <button type="button" class="form-button form-button--secondary" (click)="cancelTranscriptAction()">Cancel</button>
+                </div>
+              }
+
+              @if (transcriptActionError()) {
+                <div class="transcript-action-error" role="alert">{{ transcriptActionError() }}</div>
+              }
+            </div>
           }
         </article>
       }
@@ -61,9 +171,10 @@
   </div>
 
   <div class="typed-fallback">
-    <label for="typed-statement">Typed fallback</label>
+    <label class="form-label" for="typed-statement">Typed fallback</label>
     <textarea
       id="typed-statement"
+      class="form-control"
       data-input="typed-statement"
       rows="2"
       [value]="typedStatement()"
@@ -71,7 +182,7 @@
       placeholder="Type the statement if live speech is unavailable"></textarea>
     <button
       type="button"
-      class="secondary"
+      class="form-button form-button--secondary"
       data-action="add-typed-statement"
       [disabled]="!typedStatement().trim()"
       (click)="addTypedStatement()">Add typed statement</button>
@@ -79,11 +190,10 @@
 
   <div class="consultation-controls" aria-label="Consultation controls">
     @if (!isListening()) {
-      <button type="button" data-action="start-listening" (click)="startListening()">Start listening</button>
+      <button type="button" class="form-button" data-action="start-listening" (click)="startListening()">Start listening</button>
     } @else {
-      <button type="button" data-action="stop-listening" (click)="stopListening()">Stop listening</button>
+      <button type="button" class="form-button" data-action="stop-listening" (click)="stopListening()">Stop listening</button>
     }
-    <button type="button" class="secondary">Correct transcript</button>
-    <button type="button" class="secondary">Add clinical note</button>
+    <button type="button" class="form-button form-button--secondary">Add clinical note</button>
   </div>
 </section>
