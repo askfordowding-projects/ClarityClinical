@@ -27,6 +27,14 @@ describe('ClinicalIntelligencePanelComponent', () => {
     expect(explanation?.textContent).toContain('Wells assessment');
   });
 
+  it('shows clinician-friendly evidence provenance', () => {
+    clickButton('Why this score?');
+    fixture.detectChanges();
+
+    const explanation = element().querySelector('[data-explanation=\"score\"]');
+    expect(explanation?.textContent).toContain('Patient report');
+    expect(explanation?.textContent).not.toContain('PatientReport');
+  });
   it('reveals why the assessment changed', () => {
     expect(element().querySelector('[data-explanation="change"]')).toBeNull();
 

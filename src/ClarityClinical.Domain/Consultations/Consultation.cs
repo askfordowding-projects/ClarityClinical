@@ -1,4 +1,4 @@
-namespace ClarityClinical.Domain.Consultations;
+﻿namespace ClarityClinical.Domain.Consultations;
 
 public sealed class Consultation
 {
@@ -45,4 +45,47 @@ public sealed class Consultation
         ArgumentNullException.ThrowIfNull(fact);
         _facts.Add(fact);
     }
+
+    public void SynchronizeFactsFromEvent(
+        Guid sourceEventId,
+        IEnumerable<ClinicalFact> desiredFacts)
+    {
+        ArgumentNullException.ThrowIfNull(desiredFacts);
+        var desired = desiredFacts.ToArray();
+        if (desired.Any(fact => fact.SourceEventId != sourceEventId))
+        {
+            throw new InvalidOperationException(
+                "Projected clinical facts must reference the source event being synchronized.");
+        }
+
+        var desiredKeys = desired
+            .Select(FactKey)
+            .ToHashSet();
+        var existing = _facts
+            .Where(fact => fact.SourceEventId == sourceEventId)
+            .ToArray();
+
+        foreach (var fact in existing)
+        {
+            if (desiredKeys.Contains(FactKey(fact)))
+            {
+                fact.RestoreToReasoning();
+            }
+            else
+            {
+                fact.ExcludeFromReasoning();
+            }
+        }
+
+        var existingKeys = existing
+            .Select(FactKey)
+            .ToHashSet();
+        foreach (var fact in desired.Where(fact => !existingKeys.Contains(FactKey(fact))))
+        {
+            _facts.Add(fact);
+        }
+    }
+
+    private static (string Code, ClinicalFactSource Source) FactKey(ClinicalFact fact) =>
+        (fact.Code, fact.Source);
 }

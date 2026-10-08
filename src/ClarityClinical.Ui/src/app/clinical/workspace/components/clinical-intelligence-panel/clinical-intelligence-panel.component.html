@@ -48,7 +48,7 @@
               } @else {
                 <ul>
                   @for (evidence of assessment.supportingEvidence; track evidence.factCode) {
-                    <li>{{ evidence.displayText }} <small>{{ evidence.source }}</small></li>
+                    <li>{{ evidence.displayText }} <small>{{ evidenceSourceLabel(evidence.source) }}</small></li>
                   }
                 </ul>
               }

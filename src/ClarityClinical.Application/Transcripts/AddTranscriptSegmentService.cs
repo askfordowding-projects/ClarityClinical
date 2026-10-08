@@ -8,7 +8,8 @@ namespace ClarityClinical.Application.Transcripts;
 public sealed class AddTranscriptSegmentService(
     IConsultationRepository consultationRepository,
     ITranscriptSegmentRepository transcriptRepository,
-    IAuditWriter auditWriter)
+    IAuditWriter auditWriter,
+    TranscriptClinicalFactProjector factProjector)
 {
     public async Task<TranscriptSegment> AddAsync(
         Guid consultationId,
@@ -44,8 +45,9 @@ public sealed class AddTranscriptSegmentService(
             "TranscriptSegmentAdded",
             nameof(TranscriptSegment),
             segment.Id.ToString(),
-            Guid.NewGuid().ToString("N"),
+            segment.Id.ToString("N"),
             NewState: $"{segment.SpeakerRole}:{segment.SourceLanguage}"), cancellationToken);
+        await factProjector.ProjectAsync(segment, cancellationToken);
 
         return segment;
     }

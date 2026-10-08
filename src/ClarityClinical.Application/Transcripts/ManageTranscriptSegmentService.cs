@@ -1,4 +1,4 @@
-using ClarityClinical.Application.Audit;
+﻿using ClarityClinical.Application.Audit;
 using ClarityClinical.Application.Consultations;
 using ClarityClinical.Domain.Consultations;
 using ClarityClinical.Domain.Transcripts;
@@ -8,7 +8,8 @@ namespace ClarityClinical.Application.Transcripts;
 public sealed class ManageTranscriptSegmentService(
     IConsultationRepository consultationRepository,
     ITranscriptSegmentRepository transcriptRepository,
-    IAuditWriter auditWriter)
+    IAuditWriter auditWriter,
+    TranscriptClinicalFactProjector factProjector)
 {
     public async Task CorrectAsync(
         Guid consultationId,
@@ -28,6 +29,7 @@ public sealed class ManageTranscriptSegmentService(
             "TranscriptCorrected",
             newState: "Corrected=true",
             cancellationToken: cancellationToken);
+        await factProjector.ProjectAsync(segment, cancellationToken);
     }
 
     public async Task ChangeSpeakerAsync(
@@ -49,6 +51,7 @@ public sealed class ManageTranscriptSegmentService(
             previousState: previous,
             newState: segment.SpeakerRole.ToString(),
             cancellationToken: cancellationToken);
+        await factProjector.ProjectAsync(segment, cancellationToken);
     }
 
     public async Task ExcludeFromReasoningAsync(
@@ -75,7 +78,9 @@ public sealed class ManageTranscriptSegmentService(
             newState: "IncludeInReasoning=false",
             reason: reason.Trim(),
             cancellationToken: cancellationToken);
+        await factProjector.ProjectAsync(segment, cancellationToken);
     }
+
     public async Task RedactAsync(
         Guid consultationId,
         Guid segmentId,
@@ -101,7 +106,9 @@ public sealed class ManageTranscriptSegmentService(
             newState: "IsRedacted=true;IncludeInReasoning=false",
             reason: reason.Trim(),
             cancellationToken: cancellationToken);
+        await factProjector.ProjectAsync(segment, cancellationToken);
     }
+
     private async Task<TranscriptSegment> GetEditableSegmentAsync(
         Guid consultationId,
         Guid segmentId,
@@ -147,7 +154,7 @@ public sealed class ManageTranscriptSegmentService(
             action,
             nameof(TranscriptSegment),
             segmentId.ToString(),
-            Guid.NewGuid().ToString("N"),
+            segmentId.ToString("N"),
             PreviousState: previousState,
             NewState: newState,
             Reason: reason), cancellationToken);

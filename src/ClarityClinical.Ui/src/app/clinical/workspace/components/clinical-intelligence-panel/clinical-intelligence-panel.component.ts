@@ -62,6 +62,20 @@ export class ClinicalIntelligencePanelComponent {
     this.modifyingKey = null;
   }
 
+  protected evidenceSourceLabel(source: string): string {
+    switch (source) {
+      case 'PatientReport':
+        return 'Patient report';
+      case 'ClinicalObservation':
+        return 'Clinician observation';
+      case 'EstablishedRecord':
+        return 'Established record';
+      case 'AiInference':
+        return 'AI inference';
+      default:
+        return source;
+    }
+  }
   protected canSaveModification(): boolean {
     return this.rationale.trim().length > 0 || this.modifiedAction.trim().length > 0;
   }

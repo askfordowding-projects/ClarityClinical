@@ -1,4 +1,4 @@
-namespace ClarityClinical.Domain.Consultations;
+﻿namespace ClarityClinical.Domain.Consultations;
 
 public sealed class ClinicalFact
 {
@@ -7,7 +7,8 @@ public sealed class ClinicalFact
         string code,
         string displayText,
         ClinicalFactSource source,
-        DateTimeOffset occurredAt)
+        DateTimeOffset occurredAt,
+        Guid? sourceEventId = null)
     {
         if (string.IsNullOrWhiteSpace(code))
         {
@@ -24,6 +25,7 @@ public sealed class ClinicalFact
         DisplayText = displayText;
         Source = source;
         OccurredAt = occurredAt;
+        SourceEventId = sourceEventId;
         IncludeInReasoning = true;
     }
 
@@ -32,10 +34,16 @@ public sealed class ClinicalFact
     public string DisplayText { get; }
     public ClinicalFactSource Source { get; }
     public DateTimeOffset OccurredAt { get; }
+    public Guid? SourceEventId { get; }
     public bool IncludeInReasoning { get; private set; }
 
     public void ExcludeFromReasoning()
     {
         IncludeInReasoning = false;
+    }
+
+    public void RestoreToReasoning()
+    {
+        IncludeInReasoning = true;
     }
 }

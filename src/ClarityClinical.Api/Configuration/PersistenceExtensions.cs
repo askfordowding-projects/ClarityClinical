@@ -1,4 +1,4 @@
-using ClarityClinical.Application.Audit;
+﻿using ClarityClinical.Application.Audit;
 using ClarityClinical.Application.ClinicalIntelligence;
 using ClarityClinical.Application.Consultations;
 using ClarityClinical.Application.Consultations.Responses;
@@ -48,6 +48,8 @@ public static class PersistenceExtensions
         services.AddScoped<ExcludeClinicalFactService>();
         services.AddScoped<AddTranscriptSegmentService>();
         services.AddScoped<ManageTranscriptSegmentService>();
+        services.AddSingleton<TranscriptClinicalFactExtractor>();
+        services.AddScoped<TranscriptClinicalFactProjector>();
         services.AddSingleton<MiguelScenarioRuleSet>();
         services.AddScoped<IClinicalIntelligenceProvider, DeterministicClinicalIntelligenceProvider>();
 

@@ -19,8 +19,9 @@ The current vertical slice implements the Miguel Santos synthetic consultation u
 - an append-only application audit trail
 - public demo role selection with server-side role enforcement
 - PostgreSQL persistence
-- Spanish ↔ English browser speech translation with persisted transcript segments
+- Spanish â†” English browser speech translation with persisted transcript segments
 - clinician-controlled transcript correction, speaker re-attribution, reasoning exclusion and redaction
+- deterministic transcript-to-clinical-fact projection with source-event provenance and reversible score effects
 - typed transcript fallback when live speech is unavailable
 - liveness and readiness health checks
 
@@ -104,6 +105,8 @@ Speech__Region=<azure-region>
 Without these settings the API returns `503 Service Unavailable` for speech authorization and the consultation remains usable through typed transcript input.
 
 Patient speech is configured as Spanish to English. Clinician speech is configured as English to Spanish. Raw microphone audio is not persisted by Clarity Clinical.
+
+Transcript text is stored separately from structured clinical facts. A deterministic projector recognises the limited synthetic Miguel scenario vocabulary and creates provenance-linked facts only for Patient and Clinician speech. Carer, family, interpreter, other and unknown speaker roles do not automatically alter clinical reasoning. Correcting, re-attributing, excluding or redacting a transcript re-projects only that segment and preserves withdrawn facts as history outside active reasoning.
 ### Frontend
 
 ```powershell
