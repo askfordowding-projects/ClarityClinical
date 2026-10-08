@@ -1,4 +1,4 @@
-﻿import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -16,9 +16,9 @@ import { RouterLink } from '@angular/router';
       </header>
       <section class="admin-grid" aria-label="Administration areas">
         <article><strong>Synthetic patients</strong><span>Miguel Santos and future demo records</span></article>
-        <article><strong>Scenarios</strong><span>Controlled consultation demonstrations</span></article>
-        <article><strong>Clinical rules</strong><span>Versioned deterministic reasoning</span></article>
-        <article><strong>Audit</strong><span>Trace clinical facts to assessment changes</span></article>
+        <a class="admin-card" [routerLink]="['/admin/guidelines']"><strong>Guideline sources</strong><span>Source provenance and review status</span></a>
+        <a class="admin-card" [routerLink]="['/admin/clinical-rules']"><strong>Clinical rules</strong><span>Versioned deterministic reasoning</span></a>
+        <a class="admin-card" [routerLink]="['/admin/audit']"><strong>Audit</strong><span>Trace clinical facts to assessment changes</span></a>
       </section>
       <a [routerLink]="['/login']">Return to demo entry</a>
     </main>
@@ -31,7 +31,8 @@ import { RouterLink } from '@angular/router';
     .admin-header p { color: #c8d9d6; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; }
     .admin-header span { font-size: .72rem; color: #ffe9ad; }
     .admin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1rem 0; }
-    .admin-grid article { display: grid; gap: .35rem; padding: 1.25rem; border: 1px solid #cbd9d6; border-radius: .8rem; background: #fff; }
+    .admin-grid article, .admin-card { display: grid; gap: .35rem; padding: 1.25rem; border: 1px solid #cbd9d6; border-radius: .8rem; background: #fff; }
+    .admin-card { color: inherit; text-decoration: none; }
     .admin-grid span { color: #5d716d; }
     a { color: #2d655e; font-weight: 700; }
     @media (max-width: 44rem) { .admin-grid { grid-template-columns: 1fr; } .admin-header { display: grid; } }

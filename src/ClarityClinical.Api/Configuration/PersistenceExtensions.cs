@@ -1,4 +1,5 @@
-﻿using ClarityClinical.Application.Audit;
+using ClarityClinical.Application.Admin;
+using ClarityClinical.Application.Audit;
 using ClarityClinical.Application.ClinicalIntelligence;
 using ClarityClinical.Application.Consultations;
 using ClarityClinical.Application.Consultations.Responses;
@@ -8,6 +9,7 @@ using ClarityClinical.Application.Identity;
 using ClarityClinical.Application.Patients;
 using ClarityClinical.Application.Transcripts;
 using ClarityClinical.Infrastructure.Audit;
+using ClarityClinical.Infrastructure.Admin;
 using ClarityClinical.Infrastructure.Consultations;
 using ClarityClinical.Infrastructure.Consultations.Responses;
 using ClarityClinical.Infrastructure.Demo;
@@ -37,6 +39,8 @@ public static class PersistenceExtensions
         services.AddScoped<IDemoIdentityProvider, DemoIdentityProvider>();
         services.AddScoped<ICurrentUserAccessor, SystemCurrentUserAccessor>();
         services.AddScoped<IAuditWriter, AuditWriter>();
+        services.AddScoped<IAdminReadService, AdminReadService>();
+        services.AddScoped<GovernanceSeeder>();
         services.AddScoped<IConsultationRepository, ConsultationRepository>();
         services.AddScoped<IClinicianResponseRepository, ClinicianResponseRepository>();
         services.AddScoped<IPatientRepository, PatientRepository>();

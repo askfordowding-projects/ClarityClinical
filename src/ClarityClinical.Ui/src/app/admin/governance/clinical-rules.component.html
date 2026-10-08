@@ -1,0 +1,15 @@
+<main class="governance-page">
+  <header class="governance-page__header"><div><p>Administration</p><h1>Clinical rules</h1></div><span>Read-only canonical governance</span></header>
+  <nav class="governance-page__nav"><a routerLink="/admin">Dashboard</a><a routerLink="/admin/guidelines">Guidelines</a><a routerLink="/admin/audit">Audit</a></nav>
+  @if (error()) { <div class="error" role="alert">{{ error() }}</div> }
+  <section class="governance-list" aria-label="Active clinical rules">
+    @for (rule of rules(); track rule.ruleKey) {
+      <article class="governance-card">
+        <div><strong>{{ rule.displayName }}</strong> <span class="governance-card__badge">{{ rule.status }}</span></div>
+        <div class="governance-card__meta"><span>Rule {{ rule.ruleKey }}</span><span>Version {{ rule.version }}</span><span>{{ rule.scoreType }}</span><span>Effective {{ rule.effectiveFrom }}</span></div>
+        <div><strong>Source:</strong> {{ rule.source.organisation }} {{ rule.source.referenceCode }} · {{ rule.source.title }}</div>
+        @if (rule.isIllustrative) { <p class="governance-card__warning">{{ rule.provenanceNote }}</p> }
+      </article>
+    } @empty { <div class="governance-empty">No active rules are available.</div> }
+  </section>
+</main>

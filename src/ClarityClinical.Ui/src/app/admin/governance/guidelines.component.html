@@ -1,0 +1,15 @@
+<main class="governance-page">
+  <header class="governance-page__header"><div><p>Administration</p><h1>Guideline sources</h1></div><span>Human review required before rule changes</span></header>
+  <nav class="governance-page__nav"><a routerLink="/admin">Dashboard</a><a routerLink="/admin/clinical-rules">Clinical rules</a><a routerLink="/admin/audit">Audit</a></nav>
+  @if (error()) { <div class="error" role="alert">{{ error() }}</div> }
+  <section class="governance-list" aria-label="Guideline sources">
+    @for (source of sources(); track source.referenceCode) {
+      <article class="governance-card">
+        <div><strong>{{ source.organisation }} {{ source.referenceCode }}</strong> <span class="governance-card__badge">{{ source.reviewStatus }}</span></div>
+        <div>{{ source.title }}</div>
+        <div class="governance-card__meta"><span>Published {{ source.publishedDate }}</span>@if (source.lastReviewedDate) { <span>Reviewed {{ source.lastReviewedDate }}</span> }</div>
+        @if (source.url) { <a [href]="source.url" target="_blank" rel="noopener noreferrer">Open source guidance</a> }
+      </article>
+    } @empty { <div class="governance-empty">No guideline sources are available.</div> }
+  </section>
+</main>

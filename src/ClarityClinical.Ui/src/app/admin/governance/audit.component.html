@@ -1,0 +1,10 @@
+<main class="governance-page">
+  <header class="governance-page__header"><div><p>Administration</p><h1>Audit</h1></div><span>{{ audit().totalCount }} events in this demo session</span></header>
+  <nav class="governance-page__nav"><a routerLink="/admin">Dashboard</a><a routerLink="/admin/guidelines">Guidelines</a><a routerLink="/admin/clinical-rules">Clinical rules</a></nav>
+  @if (error()) { <div class="error" role="alert">{{ error() }}</div> }
+  @if (audit().items.length) {
+    <table class="audit-table"><thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Entity</th><th>Rule version</th></tr></thead><tbody>
+      @for (event of audit().items; track event.id) { <tr><td>{{ event.occurredAt }}</td><td>{{ event.actorRole }}</td><td>{{ event.action }}</td><td>{{ event.entityType }}</td><td>{{ event.ruleVersion ?? '—' }}</td></tr> }
+    </tbody></table>
+  } @else { <div class="governance-empty">No audit activity has been recorded for this demo session.</div> }
+</main>
