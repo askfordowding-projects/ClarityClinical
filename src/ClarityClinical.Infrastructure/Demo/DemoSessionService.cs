@@ -17,7 +17,7 @@ public sealed class DemoSessionService(
         string visitorId,
         CancellationToken cancellationToken)
     {
-        var scenario = await scenarioRepository.GetCanonicalScenarioAsync(scenarioKey, cancellationToken)
+        var scenario = await scenarioRepository.GetScenarioForVisitorAsync(scenarioKey, visitorId, cancellationToken)
             ?? throw new KeyNotFoundException($"Demo scenario '{scenarioKey}' was not found.");
         var now = DateTimeOffset.UtcNow;
         var consultation = await CreateConsultationAsync(scenario.PatientId, now, cancellationToken);
@@ -57,7 +57,7 @@ public sealed class DemoSessionService(
             cancellationToken)
             ?? throw new KeyNotFoundException($"Demo session '{sessionId}' was not found.");
         var scenario = await dbContext.DemoScenarios.SingleAsync(
-            item => item.Id == session.ScenarioId && item.IsCanonical,
+            item => item.Id == session.ScenarioId,
             cancellationToken);
         var oldConsultationId = session.ConsultationId;
         var now = DateTimeOffset.UtcNow;

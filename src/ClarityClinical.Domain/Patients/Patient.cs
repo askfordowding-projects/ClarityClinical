@@ -25,13 +25,40 @@ public sealed class Patient
     }
 
     public Guid Id { get; }
-    public string GivenName { get; }
-    public string FamilyName { get; }
+    public string GivenName { get; private set; }
+    public string FamilyName { get; private set; }
     public string DisplayName => $"{GivenName} {FamilyName}";
-    public DateOnly DateOfBirth { get; }
+    public DateOnly DateOfBirth { get; private set; }
     public IReadOnlyCollection<PatientCondition> Conditions => _conditions.AsReadOnly();
     public IReadOnlyCollection<PatientAllergy> Allergies => _allergies.AsReadOnly();
     public IReadOnlyCollection<PatientMedication> Medications => _medications.AsReadOnly();
+
+    public void UpdateDemographics(string givenName, string familyName, DateOnly dateOfBirth)
+    {
+        if (string.IsNullOrWhiteSpace(givenName)) throw new ArgumentException("Given name is required.", nameof(givenName));
+        if (string.IsNullOrWhiteSpace(familyName)) throw new ArgumentException("Family name is required.", nameof(familyName));
+        GivenName = givenName.Trim();
+        FamilyName = familyName.Trim();
+        DateOfBirth = dateOfBirth;
+    }
+
+    public void ReplaceConditions(IEnumerable<PatientCondition> values)
+    {
+        _conditions.Clear();
+        _conditions.AddRange(values);
+    }
+
+    public void ReplaceAllergies(IEnumerable<PatientAllergy> values)
+    {
+        _allergies.Clear();
+        _allergies.AddRange(values);
+    }
+
+    public void ReplaceMedications(IEnumerable<PatientMedication> values)
+    {
+        _medications.Clear();
+        _medications.AddRange(values);
+    }
 
     public void AddCondition(PatientCondition condition)
     {

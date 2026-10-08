@@ -33,7 +33,7 @@ public sealed class AuthController(IDemoIdentityProvider demoIdentityProvider) :
             new Claim(ClaimTypes.Name, demoUser.DisplayName),
             new Claim(ClaimTypes.Role, demoUser.Role),
             new Claim(DemoClaimTypes.IsDemo, bool.TrueString),
-            new Claim(DemoClaimTypes.VisitorId, Guid.NewGuid().ToString("N"))
+            new Claim(DemoClaimTypes.VisitorId, User.FindFirstValue(DemoClaimTypes.VisitorId) ?? Guid.NewGuid().ToString("N"))
         };
         var principal = new ClaimsPrincipal(new ClaimsIdentity(
             claims,

@@ -13,6 +13,7 @@ namespace ClarityClinical.Api.Controllers;
 public sealed class AdminDemoController(
     IDemoAdminReadService readService,
     IDemoSessionService sessionService,
+    IDemoSandboxService sandboxService,
     DemoScenarioSeeder scenarioSeeder) : ControllerBase
 {
     [HttpGet("patients")]
@@ -44,4 +45,36 @@ public sealed class AdminDemoController(
             return NotFound();
         }
     }
+    [HttpPost("scenarios/{scenarioKey}/sandbox")]
+    public async Task<IActionResult> CreateSandbox(string scenarioKey, CancellationToken cancellationToken)
+    {
+        var visitorId = User.FindFirst(DemoClaimTypes.VisitorId)?.Value;
+        if (string.IsNullOrWhiteSpace(visitorId)) return Unauthorized();
+        await scenarioSeeder.SeedAsync(cancellationToken);
+        try { return Ok(await sandboxService.GetOrCreateAsync(scenarioKey, visitorId, cancellationToken)); }
+        catch (KeyNotFoundException) { return NotFound(); }
+    }
+
+    [HttpPut("scenarios/{scenarioKey}/sandbox/patient")]
+    public async Task<IActionResult> UpdateSandboxPatient(string scenarioKey, DemoSandboxPatientUpdate update, CancellationToken cancellationToken)
+    {
+        var visitorId = User.FindFirst(DemoClaimTypes.VisitorId)?.Value;
+        if (string.IsNullOrWhiteSpace(visitorId)) return Unauthorized();
+        await scenarioSeeder.SeedAsync(cancellationToken);
+        try { return Ok(await sandboxService.UpdatePatientAsync(scenarioKey, visitorId, update, cancellationToken)); }
+        catch (KeyNotFoundException) { return NotFound(); }
+        catch (ArgumentException exception) { return BadRequest(new { error = exception.Message }); }
+    }
+
+    [HttpPut("scenarios/{scenarioKey}/sandbox/scenario")]
+    public async Task<IActionResult> UpdateSandboxScenario(string scenarioKey, DemoSandboxScenarioUpdate update, CancellationToken cancellationToken)
+    {
+        var visitorId = User.FindFirst(DemoClaimTypes.VisitorId)?.Value;
+        if (string.IsNullOrWhiteSpace(visitorId)) return Unauthorized();
+        await scenarioSeeder.SeedAsync(cancellationToken);
+        try { return Ok(await sandboxService.UpdateScenarioAsync(scenarioKey, visitorId, update, cancellationToken)); }
+        catch (KeyNotFoundException) { return NotFound(); }
+        catch (ArgumentException exception) { return BadRequest(new { error = exception.Message }); }
+    }
+
 }

@@ -1,0 +1,16 @@
+<main class="sandbox-page">
+<header><div><p>Administration</p><h1>Visitor sandbox</h1></div><a routerLink="/admin/scenarios">Back to scenarios</a></header>
+<div class="sandbox-notice" role="note"><strong>Your sandbox copy</strong><span>Changes apply only to this browser visitor. The canonical Miguel template remains unchanged.</span></div>
+@if(error()){<div class="error" role="alert">{{ error() }}</div>} @if(savedMessage()){<div class="success" role="status">{{ savedMessage() }}</div>}
+@if(sandbox()){
+<section class="editor-grid">
+<form class="editor-card" (submit)="$event.preventDefault(); savePatient()"><h2>Patient context</h2>
+<label>Given name<input [value]="givenName()" (input)="update(givenName, $event)" /></label><label>Family name<input [value]="familyName()" (input)="update(familyName, $event)" /></label><label>Date of birth<input type="date" [value]="dateOfBirth()" (input)="update(dateOfBirth, $event)" /></label>
+<label>Conditions <small>One per line: code | display name</small><textarea rows="5" [value]="conditionsText()" (input)="update(conditionsText, $event)"></textarea></label>
+<label>Allergies <small>One per line: code | display name</small><textarea rows="4" [value]="allergiesText()" (input)="update(allergiesText, $event)"></textarea></label>
+<label>Medications <small>One per line: code | display name</small><textarea rows="5" [value]="medicationsText()" (input)="update(medicationsText, $event)"></textarea></label>
+<button type="submit">Save sandbox patient</button></form>
+<form class="editor-card" (submit)="$event.preventDefault(); saveScenario()"><h2>Scenario</h2><label>Name<input [value]="scenarioName()" (input)="update(scenarioName, $event)" /></label><label>Description<textarea rows="4" [value]="description()" (input)="update(description, $event)"></textarea></label><label>Setting<input data-input="setting" [value]="setting()" (input)="update(setting, $event)" /></label><label>Source language<input [value]="sourceLanguage()" (input)="update(sourceLanguage, $event)" /></label><label>Clinician language<input [value]="clinicianLanguage()" (input)="update(clinicianLanguage, $event)" /></label><button type="submit">Save sandbox scenario</button>
+<p class="scenario-id">Sandbox scenario: {{ sandbox()!.scenario.scenarioKey }}</p></form>
+</section>}
+</main>

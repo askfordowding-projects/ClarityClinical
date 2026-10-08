@@ -68,8 +68,8 @@ public sealed class DemoSessionController(
         detail: detail);
 
     private static DemoSessionResponse ToResponse(Domain.Demo.DemoSession session) =>
-        new(session.Id, session.ConsultationId, session.ExpiresAt);
+        new(session.Id, session.ScenarioId, session.ConsultationId, session.ExpiresAt);
 
     public sealed record CreateDemoSessionRequest(string ScenarioKey);
-    public sealed record DemoSessionResponse(Guid Id, Guid ConsultationId, DateTimeOffset ExpiresAt);
+    public sealed record DemoSessionResponse(Guid Id, Guid ScenarioId, Guid ConsultationId, DateTimeOffset ExpiresAt);
 }

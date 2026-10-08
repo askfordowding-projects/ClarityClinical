@@ -7,6 +7,7 @@ public sealed class DemoSessionCleanupService(
     ILogger<DemoSessionCleanupService> logger) : BackgroundService
 {
     private static readonly TimeSpan Interval = TimeSpan.FromMinutes(15);
+    private static readonly TimeSpan SandboxLifetime = TimeSpan.FromHours(2);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -24,6 +25,15 @@ public sealed class DemoSessionCleanupService(
                     logger.LogInformation(
                         "Removed {ExpiredDemoSessionCount} expired demo sessions.",
                         removed);
+                }
+                var sandboxes = scope.ServiceProvider.GetRequiredService<IDemoSandboxService>();
+                var removedSandboxes = await sandboxes.DeleteExpiredAsync(
+                    DateTimeOffset.UtcNow, SandboxLifetime, stoppingToken);
+                if (removedSandboxes > 0)
+                {
+                    logger.LogInformation(
+                        "Removed {ExpiredDemoSandboxCount} expired demo sandboxes.",
+                        removedSandboxes);
                 }
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)

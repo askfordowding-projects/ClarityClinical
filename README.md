@@ -139,3 +139,5 @@ The API acceptance suite includes the complete Miguel consultation path, includi
 Clarity Clinical must not be used with real patient data. The prototype does not autonomously diagnose, prescribe or make final clinical decisions. Machine- or rule-generated output is presented as provisional decision support and remains subject to clinician review.
 
 The local synthetic patient store is prototype infrastructure. A real deployment would obtain patient context through approved integrations with existing clinical systems rather than replace the host EPR/EHR.
+
+- Visitor-specific sandbox copies let public administrators edit synthetic patient/scenario data without mutating canonical templates; inactive sandboxes expire after two hours.

@@ -17,6 +17,7 @@ export const routes: Routes = [
       .then(module => module.AdminDashboardComponent)
   },
   { path: 'admin/patients', loadComponent: () => import('./admin/demo/patients.component').then(module => module.PatientsComponent) },
+  { path: 'admin/scenarios/:scenarioKey', loadComponent: () => import('./admin/demo/sandbox-editor.component').then(module => module.SandboxEditorComponent) },
   { path: 'admin/scenarios', loadComponent: () => import('./admin/demo/scenarios.component').then(module => module.ScenariosComponent) },
   { path: 'admin/guidelines', loadComponent: () => import('./admin/governance/guidelines.component').then(module => module.GuidelinesComponent) },
   { path: 'admin/clinical-rules', loadComponent: () => import('./admin/governance/clinical-rules.component').then(module => module.ClinicalRulesComponent) },

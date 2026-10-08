@@ -35,6 +35,7 @@ public static class PersistenceExtensions
             options.UseNpgsql(connectionString));
         services.AddScoped<IDemoScenarioRepository, DemoScenarioRepository>();
         services.AddScoped<IDemoSessionService, DemoSessionService>();
+        services.AddScoped<IDemoSandboxService, DemoSandboxService>();
         services.AddScoped<DemoScenarioSeeder>();
         services.AddScoped<IDemoIdentityProvider, DemoIdentityProvider>();
         services.AddScoped<ICurrentUserAccessor, SystemCurrentUserAccessor>();
