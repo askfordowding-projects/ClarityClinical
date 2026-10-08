@@ -15,7 +15,8 @@ import { RouterLink } from '@angular/router';
         <span>DEMONSTRATION SYSTEM · SYNTHETIC DATA ONLY</span>
       </header>
       <section class="admin-grid" aria-label="Administration areas">
-        <article><strong>Synthetic patients</strong><span>Miguel Santos and future demo records</span></article>
+        <a class="admin-card" [routerLink]="['/admin/patients']"><strong>Synthetic patients</strong><span>Miguel Santos and future demo records</span></a>
+        <a class="admin-card" [routerLink]="['/admin/scenarios']"><strong>Scenarios</strong><span>Controlled consultation demonstrations</span></a>
         <a class="admin-card" [routerLink]="['/admin/guidelines']"><strong>Guideline sources</strong><span>Source provenance and review status</span></a>
         <a class="admin-card" [routerLink]="['/admin/clinical-rules']"><strong>Clinical rules</strong><span>Versioned deterministic reasoning</span></a>
         <a class="admin-card" [routerLink]="['/admin/audit']"><strong>Audit</strong><span>Trace clinical facts to assessment changes</span></a>

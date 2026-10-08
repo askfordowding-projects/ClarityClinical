@@ -40,6 +40,7 @@ public static class PersistenceExtensions
         services.AddScoped<ICurrentUserAccessor, SystemCurrentUserAccessor>();
         services.AddScoped<IAuditWriter, AuditWriter>();
         services.AddScoped<IAdminReadService, AdminReadService>();
+        services.AddScoped<IDemoAdminReadService, DemoAdminReadService>();
         services.AddScoped<GovernanceSeeder>();
         services.AddScoped<IConsultationRepository, ConsultationRepository>();
         services.AddScoped<IClinicianResponseRepository, ClinicianResponseRepository>();

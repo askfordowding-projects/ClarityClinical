@@ -1,0 +1,10 @@
+<main class="governance-page">
+<header class="governance-page__header"><div><p>Administration</p><h1>Synthetic patients</h1></div><span>Canonical templates · read-only in public demo</span></header>
+<nav class="governance-page__nav"><a routerLink="/admin">Dashboard</a><a routerLink="/admin/scenarios">Scenarios</a></nav>
+@if (error()) { <div class="error" role="alert">{{ error() }}</div> }
+<section class="governance-list">@for (patient of patients(); track patient.id) {
+<article class="governance-card"><div><strong>{{ patient.displayName }}</strong> @if(patient.isCanonical){<span class="governance-card__badge">Canonical · read-only</span>}</div><div class="governance-card__meta"><span>DOB {{ patient.dateOfBirth }}</span></div>
+<div><strong>Conditions:</strong> @for(v of patient.conditions; track v.code){ <span>{{ v.displayName }} </span>}</div>
+<div><strong>Allergies:</strong> @for(v of patient.allergies; track v.code){ <span>{{ v.displayName }} </span>}</div>
+<div><strong>Medications:</strong> @for(v of patient.medications; track v.code){ <span>{{ v.displayName }} </span>}</div></article>
+} @empty { <div class="governance-empty">No synthetic patients are available.</div> }</section></main>
