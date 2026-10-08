@@ -35,7 +35,13 @@
       </ul>
     </section>
 
-    @if (patient.medications.length > 0) {
+    @if (hasMedication('ramipril')) {
+      <aside class="medication-warning" role="note">
+        <strong>Medication safety</strong>
+        <span>Ramipril + NSAIDs</span>
+        <small>Illustrative interaction flag. Review medication context before treatment decisions.</small>
+      </aside>
+    } @else if (patient.medications.length > 0) {
       <aside class="medication-warning" role="note">
         <strong>Medication safety</strong>
         <span>Review interactions and allergies before treatment decisions.</span>

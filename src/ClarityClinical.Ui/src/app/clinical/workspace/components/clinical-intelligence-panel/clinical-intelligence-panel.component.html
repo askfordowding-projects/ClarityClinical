@@ -123,6 +123,27 @@
     }
   </div>
 
+
+  @if (warnings.length > 0 || suggestedChecks.length > 0) {
+    <div class="intelligence-panel__decision-support">
+      @if (warnings.length > 0) {
+        <aside class="decision-support-block decision-support-block--warning" role="note">
+          <strong>Safety warning</strong>
+          <ul>
+            @for (warning of warnings; track warning) { <li>{{ warning }}</li> }
+          </ul>
+        </aside>
+      }
+      @if (suggestedChecks.length > 0) {
+        <section class="decision-support-block" aria-label="Suggested checks">
+          <strong>Suggested checks</strong>
+          <ul>
+            @for (check of suggestedChecks; track check) { <li>{{ check }}</li> }
+          </ul>
+        </section>
+      }
+    </div>
+  }
   <footer class="intelligence-panel__footer">
     <span>Illustrative priority scores are not validated diagnostic probabilities.</span>
     <strong>Clinical decisions remain with the clinician.</strong>

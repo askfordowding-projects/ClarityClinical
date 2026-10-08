@@ -15,6 +15,8 @@ import {
 })
 export class ClinicalIntelligencePanelComponent {
   @Input() assessments: AssessmentCandidate[] = [];
+  @Input() warnings: string[] = [];
+  @Input() suggestedChecks: string[] = [];
   @Output() readonly responseRequested = new EventEmitter<ClinicianResponseSubmission>();
 
   protected readonly scoreExplanations = new Set<string>();

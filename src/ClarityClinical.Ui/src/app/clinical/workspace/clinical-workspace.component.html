@@ -43,7 +43,10 @@
     </section>
 
     <section class="workspace-region workspace-region--intelligence" data-region="clinical-intelligence">
-      <app-clinical-intelligence-panel [assessments]="workspace()?.assessments ?? []" />
+      <app-clinical-intelligence-panel
+        [assessments]="workspace()?.assessments ?? []"
+        [warnings]="workspace()?.warnings ?? []"
+        [suggestedChecks]="workspace()?.suggestedChecks ?? []" />
     </section>
   </div>
 </main>

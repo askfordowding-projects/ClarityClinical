@@ -26,18 +26,14 @@
   </div>
 
   <div class="concern-filters" aria-label="Symptom filters">
-    <button type="button">Pain</button>
-    <button type="button" class="is-selected">Swelling</button>
-    <button type="button">Rash</button>
-    <button type="button">Injury</button>
-    <button type="button">Numbness</button>
-    <button type="button">Mobility</button>
-    <button type="button">Infection</button>
+    @for (filter of filters; track filter) {
+      <button type="button" [class.is-selected]="selectedFilters().has(filter)" [attr.aria-pressed]="selectedFilters().has(filter)" (click)="toggleFilter(filter)">{{ filter }}</button>
+    }
   </div>
 
   <div class="selected-concern">
     <span class="selected-concern__label">Selected area</span>
     <strong>Left calf / ankle</strong>
-    <span>Swelling · wound · restricted mobility</span>
+    <span>Swelling &middot; wound &middot; restricted mobility</span>
   </div>
 </section>

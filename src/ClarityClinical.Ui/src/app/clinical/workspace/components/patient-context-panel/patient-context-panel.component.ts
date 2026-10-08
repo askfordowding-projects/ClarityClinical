@@ -10,4 +10,8 @@ import { PatientContext } from '../../clinical-workspace.models';
 })
 export class PatientContextPanelComponent {
   @Input() patient: PatientContext | null = null;
+
+  protected hasMedication(code: string): boolean {
+    return this.patient?.medications.some(item => item.code.toLowerCase() === code.toLowerCase()) ?? false;
+  }
 }

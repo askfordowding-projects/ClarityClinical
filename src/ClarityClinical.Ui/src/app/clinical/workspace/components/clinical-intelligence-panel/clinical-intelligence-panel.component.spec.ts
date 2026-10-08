@@ -45,6 +45,18 @@ describe('ClinicalIntelligencePanelComponent', () => {
       .toContain('Recent prolonged travel added to clinical reasoning.');
   });
 
+
+  it('keeps safety warnings and suggested checks visible at the decision point', () => {
+    fixture.componentRef.setInput('warnings', ['Escalate immediately for chest pain or breathlessness.']);
+    fixture.componentRef.setInput('suggestedChecks', ['Check observations and red flags']);
+    fixture.detectChanges();
+    const text = element().textContent ?? '';
+    expect(text).toContain('Safety warning');
+    expect(text).toContain('Escalate immediately for chest pain or breathlessness.');
+    expect(text).toContain('Suggested checks');
+    expect(text).toContain('Check observations and red flags');
+  });
+
   it('offers accept modify reject and defer controls', () => {
     const text = element().textContent ?? '';
     expect(text).toContain('Accept');
