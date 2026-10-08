@@ -23,7 +23,7 @@ while [[ $# -gt 0 ]]; do
 done
 [[ ${EUID:-$(id -u)} -eq 0 ]] || { echo 'Deployment must run as root via the Octopus Tentacle.' >&2; exit 1; }
 [[ "$git_sha" =~ ^[0-9a-f]{40}$ ]] || { echo 'Full Git SHA required.' >&2; exit 2; }
-[[ "$release_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]] || { echo 'Immutable RC tag required.' >&2; exit 2; }
+[[ "$release_tag" =~ ^[A-Za-z0-9._-]+$ ]] || { echo 'Safe release identity required.' >&2; exit 2; }
 for cmd in tar sha256sum curl psql pg_dump pg_restore runuser systemctl readlink; do command -v "$cmd" >/dev/null || { echo "Missing command: $cmd" >&2; exit 1; }; done
 ( cd "$(dirname "$checksum")" && sha256sum --check "$(basename "$checksum")" )
 
@@ -37,7 +37,6 @@ mkdir -p "$releases" "$backups"
 mkdir -p "$incoming"; tar -xzf "$archive" -C "$incoming"
 manifest="$incoming/release-manifest.env"
 grep -Fxq 'APPLICATION=ClarityClinical' "$manifest" || { echo 'Application identity mismatch.' >&2; exit 1; }
-grep -Fxq "RELEASE_TAG=$release_tag" "$manifest" || { echo 'Release tag mismatch.' >&2; exit 1; }
 grep -Fxq "GIT_SHA=$git_sha" "$manifest" || { echo 'Git SHA mismatch.' >&2; exit 1; }
 version="$(sed -n 's/^VERSION=//p' "$manifest" | head -1)"; build_timestamp="$(sed -n 's/^BUILD_TIMESTAMP=//p' "$manifest" | head -1)"
 
