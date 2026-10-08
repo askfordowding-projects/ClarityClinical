@@ -1,0 +1,45 @@
+﻿{
+  "contract": "askfordowding.octopus.project/v1",
+  "server": "https://askfordowding.octopus.app/",
+  "space": "Default",
+  "projectGroup": {
+    "name": "Ask For Dowding Applications",
+    "description": "Applications built by TeamCity and deployed by Octopus Deploy."
+  },
+  "project": {
+    "name": "Clarity Clinical",
+    "description": "Clarity Clinical immutable build-once TEST and STAGING promotion project.",
+    "packageId": "ClarityClinical"
+  },
+  "environments": [
+    { "name": "TEST", "host": "Henry TEST", "automatic": true },
+    { "name": "STAGING", "host": "Stella", "automatic": false }
+  ],
+  "lifecycle": {
+    "name": "Clarity Clinical - Test -> Staging",
+    "description": "Clarity Clinical promotion path. TEST deploys automatically; STAGING requires the immutable RC tag.",
+    "phases": [
+      { "name": "TEST", "environment": "TEST", "mode": "automatic", "required": true },
+      { "name": "STAGING", "environment": "STAGING", "mode": "manual", "required": true }
+    ]
+  },
+  "targetRole": "clarityclinical",
+  "deploymentProcess": {
+    "deployStep": {
+      "name": "Deploy Clarity Clinical",
+      "actionName": "Deploy Clarity Clinical",
+      "actionType": "Octopus.Script",
+      "targetRole": "clarityclinical",
+      "scriptSource": "Inline",
+      "scriptSyntax": "Bash",
+      "package": {
+        "name": "ClarityClinical",
+        "packageId": "ClarityClinical",
+        "feedId": "feeds-builtin",
+        "acquisitionLocation": "Server",
+        "extract": true
+      },
+      "dispatcher": "scripts/Invoke-ClarityClinical-OctopusDeployment.sh"
+    }
+  }
+}

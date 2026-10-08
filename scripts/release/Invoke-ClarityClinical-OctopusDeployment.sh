@@ -16,7 +16,7 @@ done
 [[ -d "$package_root" ]] || { echo 'Package root missing.' >&2; exit 2; }
 package_root="$(cd "$package_root" && pwd -P)"
 if [[ "$environment" == TEST ]]; then
-  [[ "$release_id" =~ ^test-[0-9]+-[0-9a-f]{8}$ || "$release_id" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]] || {
+  [[ "$release_id" =~ ^0\.0\.0-test\.[0-9]+\.[0-9a-f]{8}$ || "$release_id" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]] || {
     echo "TEST requires a CI test identity or immutable RC release id: ${release_id:-<missing>}" >&2; exit 2;
   }
 else
