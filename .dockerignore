@@ -1,0 +1,11 @@
+**/bin
+**/obj
+**/node_modules
+**/dist
+.git
+.worktrees
+.vs
+.idea
+.env
+.env.*
+!deployment/.env.example

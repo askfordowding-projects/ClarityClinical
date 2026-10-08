@@ -1,0 +1,58 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-clarityclinical}
+      POSTGRES_USER: ${POSTGRES_USER:-clarityclinical}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - clarityclinical-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-clarityclinical} -d ${POSTGRES_DB:-clarityclinical}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile.api
+    entrypoint: ["/app/efbundle"]
+    command: ["--connection", "Host=postgres;Port=5432;Database=${POSTGRES_DB:-clarityclinical};Username=${POSTGRES_USER:-clarityclinical};Password=${POSTGRES_PASSWORD}"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile.api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: PublicDemo
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__ClarityClinical: Host=postgres;Port=5432;Database=${POSTGRES_DB:-clarityclinical};Username=${POSTGRES_USER:-clarityclinical};Password=${POSTGRES_PASSWORD}
+      Speech__SubscriptionKey: ${SPEECH_SUBSCRIPTION_KEY:-}
+      Speech__Region: ${SPEECH_REGION:-}
+      ForwardedHeaders__Enabled: "true"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    expose:
+      - "8080"
+
+  ui:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile.ui
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${PUBLIC_HTTP_PORT:-8088}:80"
+
+volumes:
+  clarityclinical-postgres:

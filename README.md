@@ -141,3 +141,25 @@ Clarity Clinical must not be used with real patient data. The prototype does not
 The local synthetic patient store is prototype infrastructure. A real deployment would obtain patient context through approved integrations with existing clinical systems rather than replace the host EPR/EHR.
 
 - Visitor-specific sandbox copies let public administrators edit synthetic patient/scenario data without mutating canonical templates; inactive sandboxes expire after two hours.
+
+
+## Public demo packaging
+
+The repository includes container packaging for a public academic demonstration. This is a **public demo environment**, not a clinical production deployment.
+
+Files are under `deployment/`:
+
+- `Dockerfile.api` builds the .NET 10 API and an EF migration bundle
+- `Dockerfile.ui` builds Angular and serves it through nginx
+- `compose.public-demo.yml` starts PostgreSQL, runs migrations once, then starts the API and UI
+- `.env.example` documents runtime environment variables without containing deployable secrets
+
+From `deployment/`, copy `.env.example` to a local `.env`, replace the placeholder database password and optionally configure Speech, then run:
+
+```text
+docker compose --env-file .env -f compose.public-demo.yml up --build -d
+```
+
+The browser enters through the UI container. nginx proxies `/api/*` and `/health/*` to the API, so the demo remains on one public origin. PostgreSQL data is stored in a named persistent volume. The API starts only after the migration bundle completes successfully.
+
+Do not commit `.env` files, subscription keys, database passwords or deployment credentials. HTTPS is expected to be terminated by the hosting platform or external reverse proxy in front of the demo stack.
