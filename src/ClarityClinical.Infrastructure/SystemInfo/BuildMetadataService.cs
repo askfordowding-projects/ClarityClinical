@@ -17,9 +17,16 @@ public sealed class BuildMetadataService(
     {
         var migrations = await dbContext.Database.GetAppliedMigrationsAsync(cancellationToken);
         var latestMigration = migrations.LastOrDefault() ?? "none";
-        var version = configuration["Build:Version"] ?? GetAssemblyVersion();
-        var commit = configuration["Build:Commit"] ?? "development";
+        var runtimeReleaseTag = configuration["AFD_RELEASE_TAG"];
+        var version = !string.IsNullOrWhiteSpace(runtimeReleaseTag)
+            ? runtimeReleaseTag.Trim()
+            : configuration["Build:Version"] ?? GetAssemblyVersion();
+        var runtimeCommit = configuration["AFD_GIT_SHA"];
+        var commit = !string.IsNullOrWhiteSpace(runtimeCommit)
+            ? runtimeCommit.Trim()
+            : configuration["Build:Commit"] ?? "development";
         var timestamp = ParseTimestamp(configuration["Build:Timestamp"]);
+        var releasedAtUtc = ParseTimestamp(configuration["AFD_RELEASED_AT_UTC"]);
 
         return new BuildMetadataDto(
             version,
@@ -28,6 +35,7 @@ public sealed class BuildMetadataService(
             latestMigration,
             MiguelScenarioRuleSet.Version,
             timestamp,
+            releasedAtUtc,
             true);
     }
 
@@ -38,5 +46,5 @@ public sealed class BuildMetadataService(
     }
 
     private static DateTimeOffset? ParseTimestamp(string? value) =>
-        DateTimeOffset.TryParse(value, out var timestamp) ? timestamp : null;
+        DateTimeOffset.TryParse(value, out var timestamp) ? timestamp.ToUniversalTime() : null;
 }

@@ -1,0 +1,90 @@
+{
+  "contract": "askfordowding.testhub.deployment/v1",
+  "schemaVersion": 1,
+  "application": {
+    "slug": "clarityclinical",
+    "displayName": "ClarityClinical"
+  },
+  "controlPlane": {
+    "test": "TEST",
+    "staging": "STAGING",
+    "production": "PRODUCTION"
+  },
+  "environments": {
+    "test": {
+      "state": "active",
+      "targetRoot": "/opt/clarityclinical",
+      "releaseModel": "immutable",
+      "releasesRoot": "/opt/clarityclinical/releases",
+      "currentLink": "/opt/clarityclinical/current",
+      "services": [
+        "clarityclinical.service"
+      ],
+      "healthProbes": [
+        "http://127.0.0.1:5192/health/ready"
+      ],
+      "operations": {
+        "testHubManaged": false,
+        "deploySupported": false,
+        "rollbackSupported": false,
+        "versionSelectionSupported": false,
+        "deployController": null,
+        "rollbackController": null,
+        "reason": "TeamCity and Octopus own the v3 deployment lane. TestHub controls remain disabled until its Octopus integration is reconciled."
+      }
+    },
+    "staging": {
+      "state": "active",
+      "targetRoot": "/opt/clarityclinical",
+      "releaseModel": "immutable",
+      "releasesRoot": "/opt/clarityclinical/releases",
+      "currentLink": "/opt/clarityclinical/current",
+      "services": [
+        "clarityclinical.service"
+      ],
+      "healthProbes": [
+        "http://127.0.0.1:5192/health/ready"
+      ],
+      "operations": {
+        "testHubManaged": false,
+        "deploySupported": false,
+        "rollbackSupported": false,
+        "versionSelectionSupported": false,
+        "deployController": null,
+        "rollbackController": null,
+        "reason": "TeamCity and Octopus own the v3 deployment lane. TestHub controls remain disabled until its Octopus integration is reconciled."
+      }
+    },
+    "production": {
+      "state": "planned",
+      "targetRoot": "/opt/clarityclinical",
+      "releaseModel": "immutable",
+      "releasesRoot": "/opt/clarityclinical/releases",
+      "currentLink": "/opt/clarityclinical/current",
+      "services": [
+        "clarityclinical.service"
+      ],
+      "healthProbes": [
+        "http://127.0.0.1:5192/health/ready"
+      ],
+      "operations": {
+        "testHubManaged": false,
+        "deploySupported": false,
+        "rollbackSupported": false,
+        "versionSelectionSupported": false,
+        "deployController": null,
+        "rollbackController": null,
+        "reason": "TeamCity and Octopus own the v3 deployment lane. TestHub controls remain disabled until its Octopus integration is reconciled."
+      }
+    }
+  },
+  "deploymentStandard": {
+    "model": "build-once-promote",
+    "artifact": "immutable-four-part-tarball",
+    "testBeforeStaging": true,
+    "exactShaVerification": true,
+    "fourPartTagsOnly": true,
+    "perEnvironmentRebuilds": false,
+    "configurationHandling": "token-file-or-environment-only"
+  }
+}

@@ -1,4 +1,4 @@
-﻿{
+{
   "contract": "askfordowding.octopus.project/v1",
   "server": "https://askfordowding.octopus.app/",
   "space": "Default",
@@ -17,7 +17,7 @@
   ],
   "lifecycle": {
     "name": "Clarity Clinical - Test -> Staging",
-    "description": "Clarity Clinical promotion path. TEST deploys automatically; STAGING requires the immutable RC tag.",
+    "description": "Clarity Clinical promotion path. TEST deploys automatically; STAGING requires the immutable four-part release tag.",
     "phases": [
       { "name": "TEST", "environment": "TEST", "mode": "automatic", "required": true },
       { "name": "STAGING", "environment": "STAGING", "mode": "manual", "required": true }

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
-[[ $# -eq 4 ]] || { echo 'Usage: Deploy-ClarityClinicalStaging.sh <archive> <checksum> <rc-tag> <git-sha>' >&2; exit 2; }
+[[ $# -eq 4 ]] || { echo 'Usage: Deploy-ClarityClinicalStaging.sh <archive> <checksum> <four-part-tag> <git-sha>' >&2; exit 2; }
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 common="$script_dir/Deploy-ClarityClinicalEnvironment.sh"
 [[ -f "$common" ]] || common="$(cd "$script_dir/.." && pwd -P)/release/Deploy-ClarityClinicalEnvironment.sh"

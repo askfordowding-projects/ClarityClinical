@@ -9,6 +9,7 @@ export interface BuildInfo {
   latestMigration: string;
   ruleSetVersion: string;
   buildTimestamp: string | null;
+  releasedAtUtc: string | null;
   isDemo: boolean;
 }
 

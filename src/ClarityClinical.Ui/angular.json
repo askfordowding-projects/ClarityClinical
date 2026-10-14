@@ -84,29 +84,15 @@
           "builder": "@angular/build:extract-i18n"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "buildTarget": "ClarityClinical.Ui:build:development",
             "tsConfig": "tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              },
-              {
-                "glob": "microsoft.cognitiveservices.speech.sdk.bundle-min.js",
-                "input": "node_modules/microsoft-cognitiveservices-speech-sdk/distrib/browser",
-                "output": "speech-sdk"
-              }
+            "runner": "vitest",
+            "setupFiles": [
+              "src/test-setup.ts"
             ],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "scripts": []
+            "watch": false
           }
         }
       }
