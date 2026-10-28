@@ -26,7 +26,8 @@ public sealed class BuildMetadataService(
             ? runtimeCommit.Trim()
             : configuration["Build:Commit"] ?? "development";
         var timestamp = ParseTimestamp(configuration["Build:Timestamp"]);
-        var releasedAtUtc = ParseTimestamp(configuration["AFD_RELEASED_AT_UTC"]);
+        // Returned verbatim: the deployment platform verifies the exact value it wrote.
+        var releasedAtUtc = VerbatimTimestamp(configuration["AFD_RELEASED_AT_UTC"]);
 
         return new BuildMetadataDto(
             version,
@@ -44,6 +45,9 @@ public sealed class BuildMetadataService(
         var version = typeof(BuildMetadataService).Assembly.GetName().Version;
         return version is null ? "development" : $"{version.Major}.{version.Minor}.{Math.Max(version.Build, 0)}";
     }
+
+    private static string? VerbatimTimestamp(string? value) =>
+        DateTimeOffset.TryParse(value, out _) ? value!.Trim() : null;
 
     private static DateTimeOffset? ParseTimestamp(string? value) =>
         DateTimeOffset.TryParse(value, out var timestamp) ? timestamp.ToUniversalTime() : null;

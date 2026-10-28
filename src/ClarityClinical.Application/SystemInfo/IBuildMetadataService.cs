@@ -7,7 +7,7 @@ public sealed record BuildMetadataDto(
     string LatestMigration,
     string RuleSetVersion,
     DateTimeOffset? BuildTimestamp,
-    DateTimeOffset? ReleasedAtUtc,
+    string? ReleasedAtUtc,
     bool IsDemo);
 
 public interface IBuildMetadataService
