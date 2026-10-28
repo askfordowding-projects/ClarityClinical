@@ -4,8 +4,6 @@ namespace ClarityClinical.IntegrationTests.TestSupport;
 
 public sealed class PostgresTestDatabase : IAsyncDisposable
 {
-    private const string AdminConnectionString =
-        "Host=127.0.0.1;Port=5432;Username=postgres;Database=postgres";
 
     private readonly NpgsqlConnection _adminConnection;
     private readonly string _databaseName;
@@ -14,8 +12,7 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
     {
         _adminConnection = adminConnection;
         _databaseName = databaseName;
-        ConnectionString =
-            $"Host=127.0.0.1;Port=5432;Username=postgres;Database={databaseName}";
+        ConnectionString = TestPostgres.For(databaseName);
     }
 
     public string ConnectionString { get; }
@@ -23,7 +20,7 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
     public static async Task<PostgresTestDatabase> CreateAsync()
     {
         var databaseName = $"clarityclinical_test_{Guid.NewGuid():N}";
-        var adminConnection = new NpgsqlConnection(AdminConnectionString);
+        var adminConnection = new NpgsqlConnection(TestPostgres.AdminConnectionString);
         await adminConnection.OpenAsync();
 
         await using var command = new NpgsqlCommand(

@@ -11,8 +11,6 @@ namespace ClarityClinical.Api.Tests.TestSupport;
 
 public sealed class ApiTestContext : IAsyncDisposable
 {
-    private const string AdminConnectionString =
-        "Host=127.0.0.1;Port=5432;Username=postgres;Database=postgres";
 
     private readonly NpgsqlConnection _adminConnection;
     private readonly string _databaseName;
@@ -32,7 +30,7 @@ public sealed class ApiTestContext : IAsyncDisposable
     public static async Task<ApiTestContext> CreateAsync(Action<IServiceCollection>? configureServices = null)
     {
         var databaseName = $"clarityclinical_api_test_{Guid.NewGuid():N}";
-        var adminConnection = new NpgsqlConnection(AdminConnectionString);
+        var adminConnection = new NpgsqlConnection(TestPostgres.AdminConnectionString);
         await adminConnection.OpenAsync();
         await using (var command = new NpgsqlCommand(
             $"CREATE DATABASE \"{databaseName}\"",
@@ -41,8 +39,7 @@ public sealed class ApiTestContext : IAsyncDisposable
             await command.ExecuteNonQueryAsync();
         }
 
-        var connectionString =
-            $"Host=127.0.0.1;Port=5432;Username=postgres;Database={databaseName}";
+        var connectionString = TestPostgres.For(databaseName);
         var factory = new ClarityClinicalWebApplicationFactory(connectionString, configureServices);
 
         await using var scope = factory.Services.CreateAsyncScope();
