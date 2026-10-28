@@ -28,7 +28,7 @@ public sealed class BuildMetadataTests
             Assert.Equal("Testing", metadata!.Environment);
             Assert.Equal("v6.7.8.9", metadata.Version);
             Assert.Equal("0123456789abcdef0123456789abcdef01234567", metadata.Commit);
-            Assert.Equal(new DateTimeOffset(2026, 10, 14, 15, 25, 0, TimeSpan.Zero), metadata.ReleasedAtUtc);
+            Assert.Equal("2026-10-14T15:25:00Z", metadata.ReleasedAtUtc);
             Assert.StartsWith("2026", metadata.LatestMigration, StringComparison.Ordinal);
             Assert.Equal("demo-illustrative-1.0", metadata.RuleSetVersion);
             Assert.True(metadata.IsDemo);
@@ -48,6 +48,6 @@ public sealed class BuildMetadataTests
         string LatestMigration,
         string RuleSetVersion,
         DateTimeOffset? BuildTimestamp,
-        DateTimeOffset? ReleasedAtUtc,
+        string? ReleasedAtUtc,
         bool IsDemo);
 }
