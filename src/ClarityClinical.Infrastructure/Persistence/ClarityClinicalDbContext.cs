@@ -28,5 +28,6 @@ public sealed class ClarityClinicalDbContext(DbContextOptions<ClarityClinicalDbC
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ClarityClinicalDbContext).Assembly);
+        DatabaseSchemaMode.Apply(modelBuilder, DatabaseSchemaMode.PublicSchemaOnly);
     }
 }

@@ -32,7 +32,9 @@ public static class PersistenceExtensions
                 "Connection string 'ClarityClinical' is not configured.");
 
         services.AddDbContext<ClarityClinicalDbContext>(options =>
-            options.UseNpgsql(connectionString));
+            options
+                .UseNpgsql(connectionString)
+                .ReplaceService<Microsoft.EntityFrameworkCore.Infrastructure.IModelCacheKeyFactory, SchemaModeModelCacheKeyFactory>());
         services.AddScoped<IDemoScenarioRepository, DemoScenarioRepository>();
         services.AddScoped<IDemoSessionService, DemoSessionService>();
         services.AddScoped<IDemoSandboxService, DemoSandboxService>();
